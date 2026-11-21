@@ -79,6 +79,17 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 (reads `localStorage['sc-theme']`), then owned by `ThemeProvider`. Tailwind `dark:` variant targets
 `[data-theme=dark]`. Use `useTheme()` from `providers/theme-context.ts`.
 
+## Motion layer (Phase 3)
+
+- Libraries: **Motion** (`motion/react`) for component/route animation, **GSAP + ScrollTrigger + SplitText** for scroll choreography and text splitting (import them from `@/lib/motion`, which registers plugins), **Lenis** smooth scroll driven by the GSAP ticker (`providers/SmoothScroll.tsx`), **React Three Fiber + drei** for the hero particle field.
+- Reduced motion: `MotionConfig reducedMotion="user"` covers Motion; every GSAP block lives in `gsap.matchMedia()` under `MOTION_OK`; Lenis, custom cursor, magnetic pull, preloader and the 3D scene are all skipped; a global CSS guard zeroes CSS animations.
+- Scroll animations are declarative: add `data-reveal`, `data-reveal-stagger`, `data-timeline` (+`-line`/`-node`), `data-pin="experience"` (+`data-step`), or `data-hscroll` (+`data-hscroll-track`) and `hooks/useScrollAnimations.ts` picks them up. Elements are only hidden from JS, so content is readable without it.
+- Preloader (`components/motion/Preloader.tsx`) runs once per browser (`localStorage['sc-visited']`), under 1.5s; hero waits on `useIntro().introDone`.
+- 3D: `LazyHeroScene` imports three.js only after idle, on ≥768px screens with WebGL2 and motion allowed. Keep it in its own chunk.
+- Custom cursor + `<Magnetic>` only with a fine pointer (`hasFinePointer()`). Add `data-cursor="grow"` to non-link elements that should grow the ring.
+- Route transitions: `AnimatePresence mode="wait"` in `RootLayout`, keyed by pathname, with a frozen outlet. Project title/cover share `layoutId`s between card and case study.
+- Animate only `transform` and `opacity` (clip-path on the hero photo reveal is the one exception, a one-off on load).
+
 ## Conventions
 
 - TypeScript strict everywhere. Import client code via `@/…`. Server imports use `.js` suffixes (nodenext ESM).

@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import { motion } from 'motion/react'
 import { Link, useParams } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { getProject, isTodo } from '@/content/projects'
@@ -27,8 +28,17 @@ export function ProjectPage() {
           <ArrowLeft className="size-4" aria-hidden /> All projects
         </Link>
         <p className="eyebrow mt-10">{project.category}</p>
-        <h1 className="mt-4 text-h1 font-bold">{project.title}</h1>
+        <h1 className="mt-4 text-h1 font-bold">
+          <motion.span layoutId={`project-title-${project.slug}`} className="inline-block">
+            {project.title}
+          </motion.span>
+        </h1>
         <p className="mt-6 max-w-2xl text-lead text-muted">{project.summary}</p>
+        <motion.div
+          layoutId={`project-cover-${project.slug}`}
+          className="mt-10 h-40 overflow-hidden rounded-card border border-border bg-[radial-gradient(120%_120%_at_0%_0%,var(--color-surface-2),var(--color-bg))] sm:h-56"
+          aria-hidden
+        />
 
         <div className="mt-8 flex flex-wrap gap-3">
           {!isTodo(links.live) && (

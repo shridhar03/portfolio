@@ -21,12 +21,12 @@ export function About() {
       }
     >
       <div className="grid gap-10 lg:grid-cols-12">
-        <div className="space-y-5 text-lead text-muted lg:col-span-7">
+        <div className="space-y-5 text-lead text-muted lg:col-span-7" data-reveal-stagger>
           {profile.about.map((p) => (
             <p key={p}>{p}</p>
           ))}
         </div>
-        <ul className="grid gap-3 self-start lg:col-span-5">
+        <ul className="grid gap-3 self-start lg:col-span-5" data-reveal-stagger>
           {facts.map(({ icon: Icon, label, value }) => (
             <li
               key={label}

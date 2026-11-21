@@ -1,8 +1,41 @@
-import { Outlet } from 'react-router'
+import { AnimatePresence, LayoutGroup } from 'motion/react'
+import { useEffect, useState } from 'react'
+import { useLocation, useOutlet } from 'react-router'
+import { CustomCursor } from '@/components/motion/CustomCursor'
+import { ScrollTrigger } from '@/lib/motion'
+import { useLenis } from '@/providers/lenis-context'
+import { PageTransition } from './PageTransition'
 import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
+/** Keeps the outgoing route's element alive while it animates out. */
+function FrozenOutlet() {
+  const outlet = useOutlet()
+  const [frozen] = useState(outlet)
+  return frozen
+}
+
 export function RootLayout() {
+  const location = useLocation()
+  const lenis = useLenis()
+
+  // After each route swap: jump to the hash target or the top, then re-measure scroll triggers.
+  const onEnterDone = () => {
+    const target = location.hash ? document.querySelector(location.hash) : null
+    if (target) {
+      if (lenis) lenis.scrollTo(target as HTMLElement, { offset: -72 })
+      else target.scrollIntoView()
+    }
+    ScrollTrigger.refresh()
+  }
+
+  useEffect(() => {
+    if (location.hash) return
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true })
+    else window.scrollTo(0, 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
+
   return (
     <>
       <a
@@ -13,9 +46,16 @@ export function RootLayout() {
       </a>
       <SiteHeader />
       <main id="main" tabIndex={-1} className="outline-none">
-        <Outlet />
+        <LayoutGroup>
+          <AnimatePresence mode="wait" initial={false} onExitComplete={onEnterDone}>
+            <PageTransition key={location.pathname}>
+              <FrozenOutlet />
+            </PageTransition>
+          </AnimatePresence>
+        </LayoutGroup>
       </main>
       <SiteFooter />
+      <CustomCursor />
       <div className="grain" aria-hidden />
     </>
   )

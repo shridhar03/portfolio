@@ -1,5 +1,6 @@
 import { ArrowUpRight, Mail, Send } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
+import { Magnetic } from '@/components/motion/Magnetic'
 import { Button } from '@/components/ui/button'
 import { profile } from '@/content/profile'
 import { mailtoHref, validateContact, type ContactDraft } from '@/lib/contact'
@@ -61,7 +62,7 @@ export function Contact() {
     >
       <div className="blob -bottom-40 left-1/3 -z-10 size-[32rem]" aria-hidden />
       <div className="mx-auto grid max-w-content gap-12 px-4 sm:px-6 lg:grid-cols-12">
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-6" data-reveal>
           <p className="eyebrow">08 · Contact</p>
           <h2 id="contact-title" className="mt-3 text-h1 font-bold">
             Let's build <span className="text-accent-fg">something</span>.
@@ -96,15 +97,18 @@ export function Contact() {
           noValidate
           onSubmit={onSubmit}
           className="space-y-5 rounded-card border border-border bg-surface p-6 sm:p-8 lg:col-span-6"
+          data-reveal
         >
           <div className="grid gap-5 sm:grid-cols-2">
             {field('name', 'Name', 'input')}
             {field('email', 'Email', 'input', 'email')}
           </div>
           {field('message', 'Message', 'textarea')}
-          <Button type="submit" size="lg" className="w-full sm:w-auto">
-            <Send aria-hidden /> Send message
-          </Button>
+          <Magnetic>
+            <Button type="submit" size="lg">
+              <Send aria-hidden /> Send message
+            </Button>
+          </Magnetic>
         </form>
       </div>
     </section>

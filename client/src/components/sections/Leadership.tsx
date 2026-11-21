@@ -14,7 +14,7 @@ export function Leadership() {
       }
     >
       <div className="grid gap-10 lg:grid-cols-12">
-        <figure className="lg:col-span-6">
+        <figure className="lg:col-span-6" data-reveal>
           <div className="overflow-hidden rounded-card border border-border">
             <Picture
               name="speaking"
@@ -30,7 +30,7 @@ export function Leadership() {
             Speaker &amp; organizer at college tech events
           </figcaption>
         </figure>
-        <ul className="grid gap-3 self-start sm:grid-cols-2 lg:col-span-6">
+        <ul className="grid gap-3 self-start sm:grid-cols-2 lg:col-span-6" data-reveal-stagger>
           {leadership.map((l) => (
             <li key={l.title} className="rounded-card border border-border bg-surface p-5">
               <p className="font-mono text-[0.7rem] tracking-wider text-accent-fg uppercase">
