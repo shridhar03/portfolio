@@ -17,6 +17,7 @@ only use content from that spec. Unknown project details stay as `TODO`.
 │     │  ├─ ui/        shadcn/ui-style primitives (Button…), restyled with our tokens
 │     │  ├─ layout/    RootLayout, SiteHeader, (later) SiteFooter
 │     │  └─ sections/  (Phase 2) Hero, About, Skills, Experience, Projects, Education…
+│     ├─ content/      profile.ts (resume content) + projects.ts (typed wrapper over shared/projects.json)
 │     ├─ pages/        route components: HomePage, ProjectPage, ChatPage, NotFoundPage
 │     ├─ router.tsx    createBrowserRouter route table
 │     └─ main.tsx      entry: fonts, CSS, providers
@@ -27,6 +28,8 @@ only use content from that spec. Unknown project details stay as `TODO`.
 │     ├─ routes/         one Router per resource (health; later projects, contact, chat)
 │     ├─ middleware/     error + 404 handlers
 │     └─ index.ts        listen()
+├─ shared/         projects.json: single source for project data (client reads it now; seeds MongoDB in Phase 4)
+├─ scripts/        optimize-images.mjs (`npm run images`): assets-raw → client/public/img AVIF/WebP/JPEG
 └─ assets-raw/     source photos (profile-hills.jpg, speaking.jpg). Optimised copies go to client/public/img in Phase 2
 ```
 
@@ -87,4 +90,6 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - Accessibility: visible `:focus-visible` ring (accent), skip link, `aria-hidden` on decorative elements and icons, real alt text on photos.
 - Secrets only in server `.env` (see `.env.example`). Client env vars must be `VITE_*` and non-secret.
 - Phone number never appears on the public site.
+- All visible resume content comes from `client/src/content/*` and `shared/projects.json`; edit there, not in components. Unknown details are `TODO` strings and render as placeholders.
+- Photos go through `<Picture>` (AVIF → WebP → JPEG, explicit width/height to avoid layout shift). The hero image is preloaded in `index.html`.
 - Add a Vitest test next to any new pure helper (`*.test.ts`) and a supertest test for each API route.

@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router'
+import { SiteFooter } from './SiteFooter'
 import { SiteHeader } from './SiteHeader'
 
 export function RootLayout() {
@@ -11,9 +12,10 @@ export function RootLayout() {
         Skip to content
       </a>
       <SiteHeader />
-      <main id="main">
+      <main id="main" tabIndex={-1} className="outline-none">
         <Outlet />
       </main>
+      <SiteFooter />
       <div className="grain" aria-hidden />
     </>
   )

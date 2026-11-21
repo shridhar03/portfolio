@@ -1,0 +1,69 @@
+[
+  {
+    "slug": "optimal-solutionizer",
+    "title": "Optimal Solutionizer",
+    "summary": "A mathematical calculator that finds optimal solutions to complex problems.",
+    "category": "Web app",
+    "status": "shipped",
+    "order": 1,
+    "stack": ["JavaScript", "CSS", "Node.js", "Git", "Vercel"],
+    "caseStudy": {
+      "problem": "Solving complex optimisation problems by hand is slow and error-prone.",
+      "approach": "A JavaScript and CSS frontend talks to a Node.js backend that computes the optimal solution. Versioned with Git and deployed on Vercel.",
+      "outcome": "TODO: add what the project achieved (users, problem types supported, etc.)."
+    },
+    "links": { "live": "TODO", "repo": "TODO" }
+  },
+  {
+    "slug": "online-shopping-system",
+    "title": "Online Shopping System",
+    "summary": "An interactive e-commerce application.",
+    "category": "Web app",
+    "status": "shipped",
+    "order": 2,
+    "stack": ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
+    "caseStudy": {
+      "problem": "Shoppers need a simple, interactive way to browse products and place orders online.",
+      "approach": "An HTML, CSS and JavaScript frontend on top of a PHP backend, with product and order data stored in MySQL.",
+      "outcome": "TODO: add features and results (cart, checkout, admin panel, etc.)."
+    },
+    "links": { "live": "TODO", "repo": "TODO" }
+  },
+  {
+    "slug": "this-portfolio",
+    "title": "This Portfolio",
+    "summary": "A MERN portfolio with an AI chatbot and NLP, built to prove the stack rather than just list it.",
+    "category": "Case study",
+    "status": "in-progress",
+    "order": 3,
+    "stack": ["React 19", "TypeScript", "Tailwind v4", "Express", "MongoDB", "Claude API", "NLP"],
+    "caseStudy": {
+      "problem": "A list of skills on a CV doesn't show what a developer can actually build.",
+      "approach": "A React 19 + Vite frontend with scroll-driven animation, an Express + MongoDB API, an \"Ask Shridhar\" chatbot that streams answers from an LLM using resume context, and lightweight NLP for intent detection and sentiment tagging.",
+      "outcome": "Built in phases with AI-assisted vibe coding in Claude Code."
+    },
+    "links": { "live": "TODO", "repo": "TODO" }
+  },
+  {
+    "slug": "ai-ml-project",
+    "title": "AI/ML project",
+    "summary": "TODO: coming soon.",
+    "category": "AI/ML",
+    "status": "coming-soon",
+    "order": 4,
+    "stack": [],
+    "caseStudy": null,
+    "links": {}
+  },
+  {
+    "slug": "nlp-project",
+    "title": "NLP project",
+    "summary": "TODO: coming soon.",
+    "category": "NLP",
+    "status": "coming-soon",
+    "order": 5,
+    "stack": [],
+    "caseStudy": null,
+    "links": {}
+  }
+]
