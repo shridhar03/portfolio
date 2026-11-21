@@ -27,17 +27,45 @@ async function visit(
   return errors
 }
 
+/**
+ * Waits until the page is visually at rest so contrast is measured on final colours: the scroll
+ * choreography is set up (home), no finite Web Animation (Motion) is running, and nothing on
+ * screen is mid-fade (GSAP sets inline opacity). Must hold twice in a row, 300 ms apart.
+ */
+async function settle(page: Page) {
+  if (await page.locator('[data-reveal]').count()) {
+    await page.waitForSelector('html[data-scroll-ready]', { state: 'attached' })
+  }
+  const atRest = () =>
+    page.waitForFunction(() => {
+      const animating = document
+        .getAnimations()
+        .some((a) => a.playState === 'running' && a.effect?.getTiming().iterations !== Infinity)
+      const fading = [...document.querySelectorAll<HTMLElement>('[style*="opacity"]')].some(
+        (el) => {
+          const o = Number(getComputedStyle(el).opacity)
+          const r = el.getBoundingClientRect()
+          const onScreen = r.bottom > 0 && r.top < innerHeight
+          // aria-hidden decoration (cursor ring, 3D scene) may rest at partial opacity by design;
+          // upcoming experience steps rest at 0.85 and are checked by axe as they are.
+          const resting = o === 0 || o === 1 || o === 0.85 || el.closest('[aria-hidden="true"]')
+          return onScreen && !resting
+        },
+      )
+      return !animating && !fading
+    })
+  await atRest()
+  await page.waitForTimeout(300)
+  await atRest()
+}
+
 async function axe(page: Page) {
-  // Measure contrast on final colours: wait until nothing on screen is mid-fade (GSAP/Motion set
-  // inline opacity).
-  await page.waitForFunction(() =>
-    [...document.querySelectorAll<HTMLElement>('[style*="opacity"]')].every((el) => {
-      const o = Number(getComputedStyle(el).opacity)
-      const r = el.getBoundingClientRect()
-      const offscreen = r.bottom < 0 || r.top > innerHeight // e.g. scroll-scrubbed experience steps
-      return offscreen || o === 0 || o === 1 || el.closest('[aria-hidden="true"]')
-    }),
-  )
+  // Freeze the rotating role word (also exercises its pause control) so it is not caught mid-swap.
+  const pause = page.getByRole('button', { name: 'Pause rotating roles' })
+  if (await pause.isVisible()) {
+    if ((await pause.getAttribute('aria-pressed')) !== 'true') await pause.click()
+  }
+  await settle(page)
   // The film grain and WebGL canvas are decorative; everything else must pass WCAG 2.2 AA.
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG).analyze()
   expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(' | ')}`)).toEqual([])

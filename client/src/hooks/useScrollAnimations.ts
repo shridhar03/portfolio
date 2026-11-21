@@ -94,7 +94,8 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
             },
           })
           steps.forEach((step, i) => {
-            tl.fromTo(step, { opacity: 0.25, x: 24 }, { opacity: 1, x: 0, duration: 1 }, i)
+            // Upcoming steps stay slightly dimmed but readable (WCAG AA contrast at 0.85).
+            tl.fromTo(step, { opacity: 0.85, x: 24 }, { opacity: 1, x: 0, duration: 1 }, i)
           })
         })
 
@@ -120,9 +121,16 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
         })
       }),
       // Pins add spacers and fonts can shift layout: recompute every trigger once all exist.
-      () => void document.fonts?.ready.then(() => ScrollTrigger.refresh()),
+      () =>
+        void document.fonts?.ready.then(() => {
+          ScrollTrigger.refresh()
+          document.documentElement.dataset.scrollReady = '' // e2e tests wait for this
+        }),
     ]
-    const revert = () => contexts.forEach((mm) => mm.revert())
+    const revert = () => {
+      contexts.forEach((mm) => mm.revert())
+      delete document.documentElement.dataset.scrollReady
+    }
 
     if (window.location.hash) {
       steps.forEach((run) => run())
