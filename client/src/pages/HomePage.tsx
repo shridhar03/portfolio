@@ -13,6 +13,7 @@ import { Projects } from '@/components/sections/Projects'
 import { Skills } from '@/components/sections/Skills'
 import { TechMarquee } from '@/components/sections/TechMarquee'
 import { useScrollAnimations } from '@/hooks/useScrollAnimations'
+import { SahyadriRidge } from '@/components/motif/SahyadriRidge'
 
 export function HomePage() {
   const root = useRef<HTMLDivElement>(null)
@@ -30,6 +31,7 @@ export function HomePage() {
       <About />
       <Skills />
       <Experience />
+      <SahyadriRidge className="h-16 sm:h-24" crest={false} />
       <Projects />
       <Education />
       <Certifications />

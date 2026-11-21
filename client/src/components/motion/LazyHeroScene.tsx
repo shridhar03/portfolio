@@ -23,7 +23,7 @@ export function LazyHeroScene() {
       aria-hidden
     >
       <Suspense fallback={null}>
-        <HeroScene color={theme === 'dark' ? '#ffa31a' : '#c56a00'} />
+        <HeroScene color={theme === 'dark' ? '#e8a33a' : '#a86500'} />
       </Suspense>
     </div>
   )

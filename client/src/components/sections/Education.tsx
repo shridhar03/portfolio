@@ -1,9 +1,25 @@
 import { Section } from '@/components/Section'
+import { Odometer } from '@/components/motion/Odometer'
 import { education } from '@/content/profile'
+import { splitScore } from '@/lib/odometer'
+
+/** The real score from the resume; its number rolls up like an odometer. */
+function Score({ score }: { score: string }) {
+  const { before, number, after } = splitScore(score)
+  return (
+    <p className="mt-3 flex items-baseline gap-1.5">
+      {before && <span className="font-mono text-xs text-muted uppercase">{before.trim()}</span>}
+      {number && (
+        <Odometer value={number} className="font-display text-h3 font-bold text-accent-fg" />
+      )}
+      {after && <span className="font-mono text-xs text-muted">{after.trim()}</span>}
+    </p>
+  )
+}
 
 export function Education() {
   return (
-    <Section id="education" eyebrow="05 · Education" title="Learning path">
+    <Section id="education" eyebrow="05 · Education" title="Economics first, then code">
       <ol className="relative ml-3 sm:ml-[9.5rem]" data-timeline>
         {/* Track + accent line that draws itself on scroll */}
         <span className="absolute top-0 bottom-0 -left-px w-0.5 bg-border" aria-hidden />
@@ -24,9 +40,7 @@ export function Education() {
             </p>
             <h3 className="mt-1 text-h3 font-semibold sm:mt-0">{e.degree}</h3>
             <p className="mt-1 text-fg">{e.school}</p>
-            <p className="mt-2 inline-block rounded-pill bg-surface-2 px-3 py-1 font-mono text-xs">
-              {e.score}
-            </p>
+            <Score score={e.score} />
             {e.detail && <p className="mt-3 max-w-xl text-muted">{e.detail}</p>}
           </li>
         ))}

@@ -1,6 +1,6 @@
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import type { ComponentProps } from 'react'
+import { cloneElement, isValidElement, type ComponentProps, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 // shadcn/ui-style primitive, restyled with the portfolio tokens.
@@ -25,11 +25,49 @@ const buttonVariants = cva(
 )
 
 type ButtonProps = ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & { asChild?: boolean }
+  VariantProps<typeof buttonVariants> & { asChild?: boolean; roll?: boolean }
 
-export function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
+/**
+ * Rolling hover (v2 spec): the label sits on the front face of a small 3D box and rolls up while a
+ * copy rolls in from below. The copy is aria-hidden, so the accessible name is unchanged. CSS in
+ * index.css ([data-roll]); reduced motion turns it into an instant (invisible) swap.
+ */
+function Roll({ children }: { children: ReactNode }) {
+  return (
+    <span className="roll">
+      <span className="roll-face">{children}</span>
+      <span className="roll-face roll-next" aria-hidden>
+        {children}
+      </span>
+    </span>
+  )
+}
+
+export function Button({
+  className,
+  variant,
+  size,
+  asChild = false,
+  roll = size !== 'icon',
+  children,
+  ...props
+}: ButtonProps) {
   const Comp = asChild ? Slot : 'button'
-  return <Comp className={cn(buttonVariants({ variant, size }), className)} {...props} />
+  let content = children
+  if (roll) {
+    if (asChild && isValidElement<{ children?: ReactNode }>(children))
+      content = cloneElement(children, undefined, <Roll>{children.props.children}</Roll>)
+    else if (!asChild) content = <Roll>{children}</Roll>
+  }
+  return (
+    <Comp
+      data-roll={roll ? '' : undefined}
+      className={cn(buttonVariants({ variant, size }), className)}
+      {...props}
+    >
+      {content}
+    </Comp>
+  )
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

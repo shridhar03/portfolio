@@ -111,10 +111,33 @@
     "resumePdf": "/Shridhar_Chavan_Resume.pdf",
     "about": [
       "Computer Science (MCA) graduate with a solid foundation in programming, web development and data structures.",
-      "Passionate about building efficient, user-friendly software, now focused on the MERN stack, AI/ML and NLP, and AI-assisted “vibe coding” workflows.",
+      "Builds efficient, user-friendly software. Now focused on the MERN stack, AI/ML and NLP, and AI-assisted “vibe coding” workflows.",
       "Quick learner and team player. UGC NET qualified (Jan 2025)."
     ],
-    "languages": ["Marathi (native)", "Hindi", "English"]
+    "languages": ["Marathi (native)", "Hindi", "English"],
+    "story": [
+      "I studied Economics before I studied computers: a BA at Shivaji University, Kolhapur, then an MCA at Government College of Engineering, Karad.",
+      "Now I build with the MERN stack and I'm going deeper into AI/ML and NLP. I like software that is quick and easy to use, and I build it with AI-assisted “vibe coding” in Claude Code.",
+      "I learn fast, I work well in a team, and I qualified UGC NET in January 2025."
+    ],
+    "personal": [
+      {
+        "label": "Economics",
+        "value": "BA at Shivaji University: the Indian economy and the stock market (BSE)"
+      },
+      {
+        "label": "Boxing",
+        "value": "National-level boxing participant, 2020"
+      },
+      {
+        "label": "Languages",
+        "value": "Marathi is my first language. I also speak Hindi and English."
+      },
+      {
+        "label": "UGC NET",
+        "value": "Qualified in January 2025"
+      }
+    ]
   },
   "skillGroups": [
     {

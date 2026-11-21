@@ -1,49 +1,107 @@
-import { GraduationCap, Languages, MapPin } from 'lucide-react'
+import { HandMark } from '@/components/motif/HandMark'
+import { Picture } from '@/components/Picture'
 import { Section } from '@/components/Section'
+import { media } from '@/content/media'
 import { profile } from '@/content/profile'
+import { useCanPlayVideo } from '@/hooks/useCanPlayVideo'
 
-const facts = [
-  { icon: MapPin, label: 'Based in', value: profile.location },
-  { icon: GraduationCap, label: 'Education', value: 'MCA · GCE Karad · UGC NET (Jan 2025)' },
-  { icon: Languages, label: 'Speaks', value: profile.languages.join(', ') },
-]
+/**
+ * Video 2: scrolling through About scrubs a clip from the Satara hills to the stage. Until a clip
+ * is added (content/media.ts), or when video is off, the two stills tell the same story: the stage
+ * photo slides up over the hills as you scroll. Both photos are visible without JS.
+ */
+function HillsToStage() {
+  const clip = media.aboutScrub
+  const canPlay = useCanPlayVideo()
+  return (
+    <figure
+      data-scrub
+      className="relative self-start overflow-hidden rounded-card border border-border bg-surface lg:col-span-5"
+    >
+      {clip && canPlay ? (
+        <video
+          data-scrub-video
+          className="aspect-[4/5] w-full object-cover"
+          muted
+          playsInline
+          preload="auto"
+          poster={clip.poster}
+          aria-hidden
+          tabIndex={-1}
+        >
+          {clip.sources.map((s) => (
+            <source key={s.src} src={s.src} type={s.type} />
+          ))}
+        </video>
+      ) : (
+        <>
+          <div data-scrub-start className="overflow-hidden">
+            <Picture
+              name="profile"
+              widths={[360, 540, 720]}
+              sizes="(min-width: 1024px) 30rem, 92vw"
+              width={720}
+              height={900}
+              alt="Shridhar on a green hilltop in the Sahyadri, a lake in the valley behind him"
+              className="aspect-[4/5] w-full object-cover"
+            />
+          </div>
+          <div data-scrub-end className="absolute inset-x-0 bottom-0 border-t border-border">
+            <Picture
+              name="speaking"
+              widths={[480, 800, 1179]}
+              sizes="(min-width: 1024px) 30rem, 92vw"
+              width={1179}
+              height={693}
+              alt="Shridhar speaking into a microphone at a college tech event"
+              className="aspect-[17/10] w-full object-cover"
+            />
+          </div>
+        </>
+      )}
+      <span
+        className="absolute inset-x-6 top-5 h-1 overflow-hidden rounded-full bg-bg/60"
+        aria-hidden
+      >
+        <span data-scrub-progress className="block h-full origin-left rounded-full bg-accent" />
+      </span>
+      <figcaption className="sr-only">
+        From the hills to the stage: Shridhar on a hilltop, then speaking at a college tech event.
+      </figcaption>
+    </figure>
+  )
+}
 
 export function About() {
   return (
-    <Section
-      id="about"
-      eyebrow="01 · About"
-      title={
-        <>
-          Efficient, user-friendly software, <span className="text-accent-fg">built with care</span>
-          .
-        </>
-      }
-    >
-      <div className="grid gap-10 lg:grid-cols-12">
-        <div className="space-y-5 text-lead text-muted lg:col-span-7" data-reveal-stagger>
-          {profile.about.map((p) => (
-            <p key={p}>{p}</p>
-          ))}
-        </div>
-        <ul className="grid gap-3 self-start lg:col-span-5" data-reveal-stagger>
-          {facts.map(({ icon: Icon, label, value }) => (
-            <li
-              key={label}
-              className="flex items-start gap-4 rounded-card border border-border bg-surface p-5"
-            >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-2 text-accent-fg">
-                <Icon className="size-5" aria-hidden />
-              </span>
-              <span>
-                <span className="block font-mono text-xs tracking-wider text-muted uppercase">
-                  {label}
+    <Section id="about" eyebrow="01 · About" title="From the hills to the stage">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+        <HillsToStage />
+        <div className="lg:col-span-7">
+          <div className="space-y-5 text-lead text-muted" data-reveal-stagger>
+            {profile.story.map((p, i) => (
+              <p key={p} className={i === 0 ? 'text-fg' : undefined}>
+                {p}
+              </p>
+            ))}
+          </div>
+          <ul className="mt-10 grid gap-3 sm:grid-cols-2" data-reveal-stagger>
+            {profile.personal.map(({ label, value }) => (
+              <li
+                key={label}
+                className="flex items-start gap-4 rounded-card border border-border bg-surface p-5"
+              >
+                <HandMark kind="star" strokeWidth={2.5} className="mt-0.5 size-6 shrink-0" />
+                <span>
+                  <span className="block font-mono text-xs tracking-wider text-muted uppercase">
+                    {label}
+                  </span>
+                  <span className="mt-1 block text-fg">{value}</span>
                 </span>
-                <span className="mt-1 block text-fg">{value}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </Section>
   )

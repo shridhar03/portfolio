@@ -1,8 +1,9 @@
 import { ArrowUpRight, Sparkles } from 'lucide-react'
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
-import type { PointerEvent } from 'react'
+import { useRef, type PointerEvent } from 'react'
 import { Link } from 'react-router'
-import type { Project } from '@/content/projects'
+import { getProject, type Project } from '@/content/projects'
+import { useCanPlayVideo } from '@/hooks/useCanPlayVideo'
 
 /** 3D tilt following the pointer; Motion springs, transform only. Reduced motion handled by MotionConfig. */
 function useTilt(max = 7) {
@@ -26,6 +27,12 @@ function useTilt(max = 7) {
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
   const num = String(index + 1).padStart(2, '0')
   const tilt = useTilt()
+  const video = useRef<HTMLVideoElement>(null)
+  const canPlay = useCanPlayVideo()
+  // API data may lag the bundled JSON; the demo path comes from the bundle.
+  const demo = canPlay ? (project.demo ?? getProject(project.slug)?.demo) : undefined
+  const play = () => void video.current?.play().catch(() => {})
+  const stop = () => video.current?.pause()
 
   if (project.status === 'coming-soon') {
     return (
@@ -46,6 +53,13 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   return (
     <motion.article
       {...tilt}
+      onPointerEnter={demo ? play : undefined}
+      onPointerLeave={(e) => {
+        tilt.onPointerLeave()
+        if (demo && e.pointerType === 'mouse') stop()
+      }}
+      onFocus={demo ? play : undefined}
+      onBlur={demo ? stop : undefined}
       data-cursor="grow"
       className="group relative flex flex-col overflow-hidden rounded-card border border-border bg-surface transition-colors hover:border-accent/60"
     >
@@ -61,6 +75,18 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           </span>
           <span className="blob -top-10 -left-10 size-56 opacity-40" />
         </div>
+        {demo && (
+          <video
+            ref={video}
+            src={demo}
+            className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-500 group-focus-within:opacity-100 group-hover:opacity-100"
+            muted
+            loop
+            playsInline
+            preload="none"
+            tabIndex={-1}
+          />
+        )}
       </motion.div>
 
       <div className="flex flex-1 flex-col p-6 sm:p-8">

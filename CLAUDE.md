@@ -52,28 +52,32 @@ so always use the semantic utilities (`bg-surface`, `text-muted`, `text-accent-f
 
 | Token      | Dark      | Light     | Use                                                             |
 | ---------- | --------- | --------- | --------------------------------------------------------------- |
-| bg         | `#070b16` | `#f6f3ec` | page background                                                 |
-| surface    | `#0d1426` | `#ffffff` | cards                                                           |
-| surface-2  | `#141d35` | `#ece6da` | hover, raised, chips                                            |
-| border     | `#233152` | `#d8d0c0` | hairlines                                                       |
-| fg         | `#e9edf6` | `#0b1222` | body text                                                       |
-| muted      | `#9aa6c2` | `#4b5672` | secondary text                                                  |
-| accent     | `#ffa31a` | `#f29a12` | fills: buttons, dots, highlights (decorative / large)           |
-| accent-ink | `#1a0f00` | `#1a0f00` | text on an accent fill                                          |
-| accent-fg  | `#ffb547` | `#944a00` | accent used as **text**; passes AA on bg, surface and surface-2 |
-| navy-glow  | `#2b4c9a` | `#9db4e8` | secondary gradient-mesh blob                                    |
+| bg         | `#0a1410` | `#f3f1e7` | page background                                                 |
+| surface    | `#11211a` | `#fffdf6` | cards                                                           |
+| surface-2  | `#182c23` | `#ebe6d6` | hover, raised, chips                                            |
+| border     | `#24392f` | `#d6cfbb` | hairlines                                                       |
+| fg         | `#e8efe9` | `#0f1d17` | body text                                                       |
+| muted      | `#9db3a6` | `#475a50` | secondary text                                                  |
+| accent     | `#e8a33a` | `#d98f1f` | fills: buttons, dots, highlights, hand-drawn marks              |
+| accent-ink | `#1a1100` | `#1a1100` | text on an accent fill                                          |
+| accent-fg  | `#f0b85a` | `#8a4b00` | accent used as **text**; passes AA on bg, surface and surface-2 |
+| mist       | `#2f5a4a` | `#b9d3c4` | secondary gradient-mesh blob                                    |
+| ridge-far  | `#162b22` | `#dfe3d3` | Sahyadri motif, back ridge                                      |
+| ridge-near | `#0f1e18` | `#cfd6c3` | Sahyadri motif, front ridge (and footer background)             |
 
-Measured contrast: fg/bg ≈16.8:1, muted/bg ≥6.6:1, accent-fg ≥5.2:1 in light and ≥11:1 in dark,
-accent-ink on accent ≥8.4:1. Re-check if you change a value; WCAG AA is a hard requirement.
+Measured contrast (v2): dark fg/bg 16.0:1, muted 8.4 (bg) / 7.5 (card), accent-fg 10.5 / 9.3, accent-ink
+on accent 8.7; light fg/bg 15.3, muted 6.5 / 7.2, accent-fg 6.0 / 6.7, accent-ink on accent 7.0.
+Re-check if you change a value; WCAG AA is a hard requirement.
 
-**Why saffron, not cyan:** the hero photo's navy jacket has a gold/saffron piping stripe, so the
-accent comes straight out of the photo and the palette feels personal rather than generic "dev
-cyan". Saffron also nods to Maharashtra, reads warm against midnight navy, and keeps high contrast
-with dark ink text on filled buttons.
+**Palette: "Monsoon Sahyadri"** (v2, chosen by the owner from three UI UX Pro Max proposals): the deep
+forest green of the Sahyadri hills in the rains, with a turmeric accent. It comes from the hero photo
+(the green valleys behind him) and replaces v1's midnight navy + saffron.
 
 **Type:** display = Bricolage Grotesque Variable (expressive, variable optical size), body = Geist
-Variable, mono = Geist Mono Variable (eyebrows, labels, code). All self-hosted via `@fontsource-variable`
-(no third-party font requests, no FOIT). Fluid scale with `clamp()` tuned for 375→1440px:
+Variable, mono = Geist Mono Variable (eyebrows, labels, code), all via `@fontsource-variable`.
+Handwriting = Caveat Bold (`font-hand`) and the Marathi place name = Kalam (`font-marathi`), both
+self-hosted **subsets** in `client/public/fonts/` (made with pyftsubset; 17 KB + 3 KB) so they never
+compete with the LCP image. Adding new handwritten glyphs or Devanagari words means re-subsetting. Fluid scale with `clamp()` tuned for 375→1440px:
 `text-body`, `text-lead`, `text-h3`, `text-h2`, `text-h1`, `text-display`.
 
 **Other tokens:** `rounded-card` (1.25rem), `rounded-pill`, `ease-out-expo`, `ease-in-out-quint`,
@@ -133,6 +137,26 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - **CSP:** the prerender adds a `<meta http-equiv="Content-Security-Policy">` to every page, allowing inline scripts only by sha256 hash and `connect-src` only to self + the `VITE_API_URL` origin. Changing the inline theme/boot script is fine (hashes are recomputed per build); adding a third-party script, font or API host needs a CSP change in `client/scripts/prerender.mjs`. Header-only rules (`X-Frame-Options`, etc.) live in `vercel.json`.
 - **CI:** `.github/workflows/ci.yml` runs lint, format check, typecheck, unit/API tests, build, then the Playwright suite.
 - The full setup and deploy guide for humans is `README.md`; keep it in sync when env vars or commands change.
+
+## v2 spec: video, 3D text, personal look
+
+- **Video slots** (`content/media.ts`, `components/media/AmbientVideo.tsx`, `lib/media.ts`): `heroLoop` (hero
+  background), `aboutScrub` (About: scroll drives `video.currentTime`, [data-scrub]), and `demo` on a project in
+  `shared/projects.json` (plays on card hover/focus). All are `null`/absent until real clips exist; then the
+  stills are used. Video only plays after hydration and never under reduced motion, Data Saver or 2g/3g
+  (`canAutoplayVideo`). The About fallback slides the stage photo over the hills photo with scroll.
+- **3D text:** hero name letters flip up (SplitText chars, rotateX); `RoleRotator` is a box turning a
+  quarter per role (pause button kept); section `h2`s carry `[data-tilt]` and stand upright on scroll
+  (transform only, always readable); `Button` rolls its label on hover (`.roll`, aria-hidden copy, opt out
+  with `roll={false}`); routed page titles use `FlipTitle` (only animates after client navigation, so the
+  prerender is never hidden); scores use `Odometer` (`[data-odometer]`, final value in the markup).
+- **Personal layer:** the repeating motif is `components/motif/SahyadriRidge.tsx` (hero bottom, the divider
+  before Projects, footer, OG image). Hand-drawn marks are `HandMark` (`underline | circle | arrow | star`,
+  `draw="scroll"` or `"hero"`) and `HandNote`; keep them few. Site copy in the owner's voice lives in
+  `profile.story` and `profile.personal` (shared/profile.json); `profile.about` stays neutral for the chatbot.
+- **Anti-"AI look" rules** (audit every section when copy changes): no purple/violet gradients, no 👋 or
+  emoji openers, no "passionate", "leverage", "cutting-edge", "seamless" or similar filler, no invented
+  numbers or stats (only resume facts), real photos only.
 
 ## Conventions
 

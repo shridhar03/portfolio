@@ -21,7 +21,7 @@ export function renderContactEmail(m: SavedMessage) {
     <h2>New message from your portfolio</h2>
     <p><strong>${esc(m.name)}</strong> &lt;${esc(m.email)}&gt;</p>
     <p>Sentiment: <strong>${m.sentiment.label}</strong> (${m.sentiment.score})</p>
-    <blockquote style="border-left:3px solid #ffa31a;padding-left:12px;white-space:pre-wrap">${esc(m.message)}</blockquote>`
+    <blockquote style="border-left:3px solid #e8a33a;padding-left:12px;white-space:pre-wrap">${esc(m.message)}</blockquote>`
   const text = `${m.name} <${m.email}>\nSentiment: ${m.sentiment.label} (${m.sentiment.score})\n\n${m.message}`
   return { subject, html, text }
 }

@@ -2,6 +2,7 @@ import { Seo } from '@/components/Seo'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
 import { ChatPanel } from '@/components/chat/ChatPanel'
+import { FlipTitle } from '@/components/motion/FlipTitle'
 
 /** Full-screen "Ask Shridhar". Shares the conversation with the floating widget. */
 export function ChatPage() {
@@ -19,7 +20,7 @@ export function ChatPage() {
         </Link>
         <p className="eyebrow mt-6">AI assistant</p>
         <h1 className="mt-2 text-h2 font-bold">
-          Ask <span className="text-accent-fg">Shridhar</span>
+          <FlipTitle text="Ask Shridhar" />
         </h1>
         <p className="mt-2 text-muted">
           Answers come from his resume, streamed live by Claude. Off-topic questions are politely

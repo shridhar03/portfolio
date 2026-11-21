@@ -26,29 +26,29 @@ const base = `
 @font-face { font-family: B; src: url(${body}); font-weight: 100 900; }
 @font-face { font-family: M; src: url(${mono}); font-weight: 100 900; }
 * { margin: 0; box-sizing: border-box; }
-body { background: #070b16; color: #e9edf6; font-family: B; overflow: hidden; }
-.accent { color: #ffa31a; }`
+body { background: #0a1410; color: #e8efe9; font-family: B; overflow: hidden; }
+.accent { color: #e8a33a; }`
 
 const og = `<style>${base}
 body { width: 1200px; height: 630px; position: relative; }
 .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .45; }
 .copy { position: absolute; left: 72px; top: 0; bottom: 0; width: 640px; display: flex; flex-direction: column; justify-content: center; }
-.eyebrow { font-family: M; font-size: 20px; letter-spacing: .2em; text-transform: uppercase; color: #ffb547; }
+.eyebrow { font-family: M; font-size: 20px; letter-spacing: .2em; text-transform: uppercase; color: #f0b85a; }
 h1 { font-family: D; font-weight: 800; font-size: 112px; line-height: .92; letter-spacing: -.03em; margin-top: 24px; }
-p { font-size: 28px; color: #9aa6c2; margin-top: 32px; line-height: 1.35; text-wrap: balance; }
-.photo { position: absolute; right: 72px; top: 56px; width: 380px; height: 520px; border-radius: 999px 999px 28px 28px; overflow: hidden; border: 2px solid #233152; }
+p { font-size: 28px; color: #9db3a6; margin-top: 32px; line-height: 1.35; text-wrap: balance; }
+.photo { position: absolute; right: 72px; top: 56px; width: 380px; height: 520px; border-radius: 999px 999px 28px 28px; overflow: hidden; border: 2px solid #24392f; }
 .photo img { width: 100%; height: 100%; object-fit: cover; }
-.bar { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; background: #ffa31a; }
+.ridge { position: absolute; left: 0; right: 0; bottom: 0; width: 1200px; height: 150px; }
 </style>
-<div class="blob" style="width:520px;height:520px;left:-160px;top:-200px;background:#ffa31a"></div>
-<div class="blob" style="width:620px;height:620px;right:-220px;bottom:-260px;background:#2b4c9a"></div>
+<div class="blob" style="width:520px;height:520px;left:-160px;top:-200px;background:#e8a33a"></div>
+<div class="blob" style="width:620px;height:620px;right:-220px;bottom:-260px;background:#2f5a4a"></div>
 <div class="copy">
   <div class="eyebrow">${profile.location}</div>
-  <h1>Shridhar<br>Chavan<span class="accent">.</span></h1>
+  <h1>Shridhar<br>Chavan</h1>
   <p>${profile.tagline}</p>
 </div>
 <div class="photo"><img src="${photo}" alt=""></div>
-<div class="bar"></div>`
+<svg class="ridge" viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0 118 76 112 138 72 262 66 302 92 362 88 424 52 562 46 604 80 682 84 742 60 862 57 904 94 982 97 1044 64 1182 60 1222 88 1302 91 1362 70 1440 72V200H0Z" fill="#162b22"/><path d="M0 152 118 147 168 118 302 113 342 141 472 145 522 112 642 107 692 141 822 147 872 121 1012 116 1062 147 1182 151 1232 125 1342 120 1392 145 1440 147V200H0Z" fill="#0f1e18"/><path d="M424 52 562 46" stroke="#e8a33a" stroke-width="4" stroke-linecap="round"/></svg>`
 
 const icon = (size) => `<style>${base}
 body { width: ${size}px; height: ${size}px; display: grid; place-items: center; }
@@ -81,8 +81,8 @@ await writeFile(
       short_name: 'Shridhar',
       start_url: '/',
       display: 'standalone',
-      background_color: '#070b16',
-      theme_color: '#070b16',
+      background_color: '#0a1410',
+      theme_color: '#0a1410',
       icons: [
         { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
         { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },

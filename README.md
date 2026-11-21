@@ -10,6 +10,10 @@ and Claude for the chat.
 
 ## Highlights
 
+- **Monsoon Sahyadri look:** forest green and turmeric from the hero photo, a repeating Sahyadri ridge
+  motif, a few hand-drawn marks and the Marathi name of Satara. 3D text: the name flips in letter by
+  letter, roles turn on a box, headings tilt upright on scroll, buttons roll on hover, GPAs roll like
+  an odometer.
 - **Motion with restraint:** a one-time preloader, a SplitText hero reveal, scroll-driven sections
   (pinned experience story, horizontal certifications strip, drawn timeline) with GSAP +
   ScrollTrigger and Lenis smooth scroll, a lazy-loaded React Three Fiber particle field, shared-layout
@@ -161,6 +165,13 @@ Any static host works if it serves `chat/index.html` for `/chat` and `404.html` 
 Create a service from this repository with build command
 `npm ci --include=dev && npm run build -w server`, start command `npm run start -w server`,
 health check `/api/health`, and the same variables as above.
+
+## Videos
+
+The v2 design has three video slots: a looping hero background, a scroll-scrubbed About clip (hills to
+stage) and short project demos on card hover. None ship yet, so the site uses the photos instead. To add
+one, see [`assets-raw/video/README.md`](assets-raw/video/README.md). Video never plays for visitors who
+prefer reduced motion, use Data Saver or are on a slow connection.
 
 ## Content
 

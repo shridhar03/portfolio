@@ -16,8 +16,8 @@ export function Projects() {
             <p className="eyebrow" data-reveal>
               04 · Projects
             </p>
-            <h2 id="projects-title" className="mt-3 text-h2 font-bold" data-reveal>
-              Selected work
+            <h2 id="projects-title" className="mt-3 text-h2 font-bold" data-tilt>
+              Things I&apos;ve shipped
             </h2>
             <p className="mt-4 text-lead text-muted" data-reveal>
               From a maths optimiser to e-commerce to this site. Open a card for the case study.

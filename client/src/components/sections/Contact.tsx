@@ -93,11 +93,12 @@ export function Contact() {
       <div className="mx-auto grid max-w-content gap-12 px-4 sm:px-6 lg:grid-cols-12">
         <div className="lg:col-span-6" data-reveal>
           <p className="eyebrow">08 · Contact</p>
-          <h2 id="contact-title" className="mt-3 text-h1 font-bold">
-            Let's build <span className="text-accent-fg">something</span>.
+          <h2 id="contact-title" className="mt-3 text-h1 font-bold" data-tilt>
+            Write to <span className="text-accent-fg">me</span>
           </h2>
           <p className="mt-5 max-w-md text-lead text-muted">
-            Have a role, a project or just a question? Send a note and I'll get back to you.
+            A job, freelance work, or a question about something on this page: send it here, or
+            email me directly.
           </p>
           <ul className="mt-8 space-y-3">
             <li>

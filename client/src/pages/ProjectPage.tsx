@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { isTodo } from '@/content/projects'
 import { useProject } from '@/hooks/useProjects'
 import { NotFoundPage } from './NotFoundPage'
+import { FlipTitle } from '@/components/motion/FlipTitle'
 
 export function ProjectPage() {
   const { slug = '' } = useParams()
@@ -33,7 +34,7 @@ export function ProjectPage() {
         <p className="eyebrow mt-10">{project.category}</p>
         <h1 className="mt-4 text-h1 font-bold">
           <motion.span layoutId={`project-title-${project.slug}`} className="inline-block">
-            {project.title}
+            <FlipTitle text={project.title} />
           </motion.span>
         </h1>
         <p className="mt-6 max-w-2xl text-lead text-muted">{project.summary}</p>

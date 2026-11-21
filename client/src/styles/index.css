@@ -1,6 +1,25 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+/* Handwriting (Caveat Bold) and the Marathi place name (Kalam), both SIL OFL. Subset with
+   pyftsubset to the glyphs the site uses (17 KB + 3 KB) so they never compete with the hero image. */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/caveat-700-subset.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00B7, U+2014, U+2019, U+201C-201D;
+}
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/kalam-satara.woff2') format('woff2');
+  unicode-range: U+0900-097F;
+}
+
 /* Dark mode is driven by data-theme on <html>, set before paint in index.html. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
@@ -164,4 +183,51 @@ html.motion-ok [data-hero] {
   to {
     visibility: visible;
   }
+}
+
+/* ---------- v2: 3D text and the hand-drawn layer ---------- */
+
+/* Rolling button hover: two faces of a small box around the X axis (see components/ui/button). */
+.roll {
+  display: inline-grid;
+  perspective: 600px;
+}
+.roll-face {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transform-origin: 50% 50% -0.75em;
+  backface-visibility: hidden;
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    opacity 0.5s var(--ease-out-expo);
+}
+.roll-next {
+  transform: rotateX(-90deg);
+  opacity: 0;
+}
+@media (hover: hover) {
+  [data-roll]:hover .roll-face:first-child,
+  [data-roll]:focus-visible .roll-face:first-child {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  [data-roll]:hover .roll-next,
+  [data-roll]:focus-visible .roll-next {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+/* The hero name flips in letter by letter; its letters need a 3D stage. */
+#hero-title {
+  perspective: 900px;
+}
+
+/* Hand-drawn marks draw themselves in; before JS they are simply drawn (no hidden content). */
+[data-draw] path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
 }

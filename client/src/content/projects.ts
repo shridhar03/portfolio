@@ -11,6 +11,8 @@ export type Project = {
   stack: string[]
   caseStudy: { problem: string; approach: string; outcome: string } | null
   links: { live?: string; repo?: string }
+  /** Video 3: short muted demo (client/public/video/…mp4) that plays when the card is hovered. */
+  demo?: string
 }
 
 export const projects = (raw as Project[]).toSorted((a, b) => a.order - b.order)

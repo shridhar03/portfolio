@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import { useHydrated } from '@/hooks/useHydrated'
 
 /**
- * Cycles role words. Screen readers get the full list once; the animated word is aria-hidden.
+ * Roles on the faces of a 3D box that turns a quarter (rotateX) to the next role. Screen readers get the full list once; the animated word is aria-hidden.
  * WCAG 2.2.2: rotation pauses on hover and has a pause/play button; reduced motion never rotates.
  */
 export function RoleRotator({
   roles,
-  interval = 2200,
+  interval = 2600,
 }: {
   roles: readonly string[]
   interval?: number
@@ -33,7 +33,10 @@ export function RoleRotator({
       onPointerLeave={() => setHovered(false)}
     >
       <span className="sr-only">{roles.join(', ')}</span>
-      <span aria-hidden className="relative inline-grid overflow-hidden">
+      <span
+        aria-hidden
+        className="relative inline-grid rounded-lg border border-accent/70 bg-surface px-3 py-1 [perspective:700px]"
+      >
         {/* invisible longest word reserves width: no layout shift */}
         <span className="invisible col-start-1 row-start-1">
           {roles.reduce((a, b) => (b.length > a.length ? b : a))}
@@ -41,11 +44,12 @@ export function RoleRotator({
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={roles[i]}
-            className="col-start-1 row-start-1 text-fg"
-            initial={{ y: '100%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '-100%', opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="col-start-1 row-start-1 text-accent-fg [backface-visibility:hidden]"
+            style={{ transformOrigin: '50% 50% -0.7em' }}
+            initial={{ rotateX: -90, opacity: 0 }}
+            animate={{ rotateX: 0, opacity: 1 }}
+            exit={{ rotateX: 90, opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             {roles[i]}
           </motion.span>

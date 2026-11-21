@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { Sun } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
+import { FlipTitle } from '@/components/motion/FlipTitle'
 
 /** Playful 404: digits drop in, and the "0" is a sun you can drag around the hills. */
 export function NotFoundPage() {
@@ -63,7 +64,7 @@ export function NotFoundPage() {
         <motion.span {...drop(2)}>4</motion.span>
       </div>
       <h1 className="mt-6 text-h2 font-bold">
-        Lost in the <span className="text-accent-fg">hills</span>.
+        <FlipTitle text="Lost in the hills." />
       </h1>
       <p className="mt-3 max-w-md text-muted">
         This page wandered off the trail. Drag the sun around while you're here, or head back home.

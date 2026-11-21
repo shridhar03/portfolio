@@ -75,8 +75,8 @@ export function Skills() {
     <Section
       id="skills"
       eyebrow="02 · Skills"
-      title="The toolkit"
-      intro="Full-stack JavaScript at the core, with AI/ML and NLP layered on top."
+      title="What I build with"
+      intro="JavaScript across the whole stack, with AI/ML and NLP on top."
     >
       <ul
         className="grid auto-rows-[minmax(11rem,auto)] gap-4 sm:grid-cols-2 lg:grid-cols-4"

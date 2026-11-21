@@ -1,10 +1,15 @@
 import { ArrowDownRight, FileDown, MessageCircle } from 'lucide-react'
 import { useRef } from 'react'
+import { AmbientVideo } from '@/components/media/AmbientVideo'
+import { HandMark } from '@/components/motif/HandMark'
+import { HandNote } from '@/components/motif/HandNote'
+import { SahyadriRidge } from '@/components/motif/SahyadriRidge'
 import { LazyHeroScene } from '@/components/motion/LazyHeroScene'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { RoleRotator } from '@/components/motion/RoleRotator'
 import { Picture } from '@/components/Picture'
 import { Button } from '@/components/ui/button'
+import { media } from '@/content/media'
 import { profile } from '@/content/profile'
 import { useIsoLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { gsap, MOTION_OK, SplitText } from '@/lib/motion'
@@ -26,13 +31,27 @@ export function Hero() {
         gsap.set('[data-hero-curtain]', { scaleY: 1 })
         return
       }
-      const split = SplitText.create('#hero-title', { type: 'chars,lines', mask: 'lines' })
+      // 3D letter flip: each letter turns up from lying flat (rotateX -100°) on its baseline.
+      const split = SplitText.create('#hero-title', { type: 'words,chars' })
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
       tl.set('[data-hero]', { autoAlpha: 1 })
-        .from(split.chars, { yPercent: 115, duration: 1.1, stagger: 0.035 })
-        .from('[data-hero-fade]', { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0.25)
+        .from(split.chars, {
+          rotateX: -100,
+          yPercent: 20,
+          autoAlpha: 0,
+          transformOrigin: '50% 90%',
+          duration: 1.1,
+          stagger: 0.045,
+        })
+        .from('[data-hero-fade]', { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0.3)
         .fromTo('[data-hero-curtain]', { scaleY: 1 }, { scaleY: 0, duration: 1.1 }, 0.1)
         .from('[data-hero-photo] img', { scale: 1.08, duration: 1.3 }, 0.1)
+        .fromTo(
+          '[data-draw="hero"] path',
+          { strokeDashoffset: 1 },
+          { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut', stagger: 0.15 },
+          0.9,
+        )
       // Subtle parallax on the portrait while scrolling out of the hero.
       gsap.to('[data-hero-photo] img', {
         yPercent: 8,
@@ -46,43 +65,60 @@ export function Hero() {
 
   return (
     <section ref={root} aria-labelledby="hero-title" className="relative isolate overflow-hidden">
+      {/* Video 1: looping background made in Canva. Still or nothing until a clip is added. */}
+      <AmbientVideo clip={media.heroLoop} className="absolute inset-0 -z-20 size-full opacity-25" />
+      {media.heroLoop && (
+        <div
+          className="absolute inset-0 -z-10 bg-gradient-to-r from-bg via-bg/85 to-bg/40"
+          aria-hidden
+        />
+      )}
       <LazyHeroScene />
       <div className="blob -top-40 -left-32 -z-10 size-[30rem]" aria-hidden />
       <div
-        className="blob top-1/4 -right-40 -z-10 size-[36rem] [--blob:var(--color-navy-glow)]"
+        className="blob top-1/4 -right-40 -z-10 size-[36rem] [--blob:var(--color-mist)]"
         aria-hidden
       />
 
-      <div className="mx-auto grid min-h-dvh max-w-content items-center gap-12 px-4 pt-28 pb-16 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:pt-24">
+      <div className="mx-auto grid min-h-dvh max-w-content items-center gap-12 px-4 pt-28 pb-28 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:pt-24 lg:pb-32">
         <div className="lg:col-span-7" data-hero>
-          <p className="eyebrow" data-hero-fade>
-            {profile.location}
+          <p className="flex items-baseline gap-3" data-hero-fade>
+            <span className="eyebrow">{profile.location}</span>
+            <span lang="mr" className="font-marathi text-lg text-muted">
+              सातारा
+            </span>
           </p>
-          <h1 id="hero-title" className="mt-5 text-display font-bold">
+          <h1 id="hero-title" className="relative mt-5 text-display font-bold">
             Shridhar
             <br />
-            <span className="lg:pl-[0.6em]">
-              Chavan<span className="text-accent">.</span>
+            <span className="relative inline-block lg:pl-[0.6em]">
+              Chavan
+              <HandMark
+                kind="underline"
+                draw="hero"
+                className="absolute -bottom-[0.12em] left-0 h-[0.2em] w-full lg:left-[0.6em] lg:w-[calc(100%-0.6em)]"
+              />
             </span>
           </h1>
 
-          <p className="mt-6 font-mono text-base text-muted" data-hero-fade>
-            <span className="text-accent-fg" aria-hidden>
-              ›{' '}
-            </span>
+          <p
+            className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-display text-h3 font-semibold text-muted"
+            data-hero-fade
+          >
+            <span>I&apos;m a</span>
             <RoleRotator roles={profile.roles} />
           </p>
 
           <p className="mt-6 max-w-xl text-lead text-muted" data-hero-fade>
-            MCA graduate building with the MERN stack, exploring AI/ML and NLP, and shipping fast
-            with AI-assisted vibe coding.
+            I studied Economics, then computers. Now I build web apps with MongoDB, Express, React
+            and Node, and I&apos;m teaching them to read language with AI/ML and NLP.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3" data-hero-fade>
             <Magnetic>
               <Button asChild size="lg">
-                <a href="#contact">
-                  Get in touch <ArrowDownRight aria-hidden />
+                <a href="#projects">
+                  See my work <ArrowDownRight aria-hidden />
                 </a>
               </Button>
             </Magnetic>
@@ -124,15 +160,13 @@ export function Hero() {
               aria-hidden
             />
           </div>
-          <div
-            data-hero-fade
-            className="absolute -bottom-4 left-4 rounded-pill border border-border bg-surface/90 px-4 py-2 font-mono text-xs text-fg backdrop-blur sm:-left-6"
-          >
-            <span className="mr-2 inline-block size-2 rounded-full bg-accent" aria-hidden />
-            UGC NET qualified · 2025
+          <div className="absolute -right-2 -bottom-10 sm:-right-6" data-hero aria-hidden>
+            <HandMark kind="circle" draw="hero" className="absolute -inset-x-4 -inset-y-3" />
+            <HandNote className="relative px-3 py-2">me, up in the hills</HandNote>
           </div>
         </div>
       </div>
+      <SahyadriRidge className="absolute inset-x-0 bottom-0 -z-10" />
     </section>
   )
 }

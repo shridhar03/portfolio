@@ -10,6 +10,10 @@ import { DESKTOP, gsap, MOTION_OK, ScrollTrigger } from '@/lib/motion'
  *  - [data-timeline]         education timeline: [data-timeline-line] draws, [data-timeline-node] pops
  *  - [data-pin="experience"] pinned story on desktop; [data-step] items light up in turn
  *  - [data-hscroll]          pinned horizontal strip on desktop; [data-hscroll-track] is the scroll viewport, its first child moves
+ *  - [data-tilt]             heading tilted back in 3D that stands upright as it scrolls in (stays readable)
+ *  - [data-draw="scroll"]    hand-drawn SVG mark that draws its strokes when it enters
+ *  - [data-odometer]         digits ([data-odo-digit]) roll up from 0 to their value
+ *  - [data-scrub]            About story: a video scrubbed by scroll, or the stage still sliding up
  * Nothing is hidden unless motion is allowed, so content is always readable without JS.
  * Setup waits for an idle moment (everything it touches starts below the fold), which keeps
  * ScrollTrigger's layout reads off the critical path. With a #hash in the URL it runs at once.
@@ -54,6 +58,78 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
             stagger: 0.07,
             scrollTrigger: { trigger: group, start: 'top 85%', once: true },
           })
+        })
+      }),
+      step(MOTION_OK, () => {
+        gsap.utils.toArray<HTMLElement>('[data-tilt]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { rotateX: 38, y: 28, transformPerspective: 900, transformOrigin: '50% 100%' },
+            {
+              rotateX: 0,
+              y: 0,
+              ease: 'none',
+              scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 62%', scrub: 0.6 },
+            },
+          )
+        })
+        gsap.utils.toArray<SVGElement>('[data-draw="scroll"]').forEach((svg) => {
+          gsap.fromTo(
+            svg.querySelectorAll('path'),
+            { strokeDashoffset: 1 },
+            {
+              strokeDashoffset: 0,
+              duration: 1,
+              ease: 'power2.inOut',
+              stagger: 0.15,
+              scrollTrigger: { trigger: svg, start: 'top 85%', once: true },
+            },
+          )
+        })
+        gsap.utils.toArray<HTMLElement>('[data-odometer]').forEach((odo) => {
+          odo.querySelectorAll<HTMLElement>('[data-odo-digit]').forEach((col, i) => {
+            gsap.fromTo(
+              col,
+              { yPercent: 0, y: 0 },
+              {
+                yPercent: -Number(col.dataset.odoDigit) * 10,
+                duration: 1.6 + i * 0.25,
+                ease: 'power3.out',
+                scrollTrigger: { trigger: odo, start: 'top 88%', once: true },
+              },
+            )
+          })
+        })
+      }),
+      step(MOTION_OK, () => {
+        gsap.utils.toArray<HTMLElement>('[data-scrub]').forEach((fig) => {
+          const trigger = { trigger: fig, start: 'top 80%', end: 'bottom 30%', scrub: 0.5 }
+          const video = fig.querySelector<HTMLVideoElement>('video[data-scrub-video]')
+          if (video) {
+            // Video 2: scroll position drives the playhead (hills → stage).
+            ScrollTrigger.create({
+              ...trigger,
+              onUpdate: ({ progress }) => {
+                if (video.duration) video.currentTime = progress * video.duration
+              },
+            })
+          } else {
+            gsap.fromTo(
+              fig.querySelector('[data-scrub-end]'),
+              { yPercent: 100 },
+              { yPercent: 0, ease: 'none', scrollTrigger: trigger },
+            )
+            gsap.fromTo(
+              fig.querySelector('[data-scrub-start] img'),
+              { scale: 1 },
+              { scale: 1.12, ease: 'none', scrollTrigger: trigger },
+            )
+          }
+          gsap.fromTo(
+            fig.querySelector('[data-scrub-progress]'),
+            { scaleX: 0 },
+            { scaleX: 1, ease: 'none', scrollTrigger: trigger },
+          )
         })
       }),
       step(MOTION_OK, () => {
