@@ -1,13 +1,22 @@
 import { randomUUID } from 'node:crypto'
 import type { Project } from '../lib/projectsData.js'
-import type { SavedMessage, Stores } from './types.js'
+import type { NewChatLog, SavedMessage, Stores } from './types.js'
 
-export function createMemoryStores(seed: Project[]): Stores & { _messages: SavedMessage[] } {
+export function createMemoryStores(
+  seed: Project[],
+): Stores & { _messages: SavedMessage[]; _chatLogs: NewChatLog[] } {
   const projects = [...seed].sort((a, b) => a.order - b.order)
   const messages: SavedMessage[] = []
+  const chatLogs: NewChatLog[] = []
   return {
     kind: 'memory',
     _messages: messages,
+    _chatLogs: chatLogs,
+    chatLogs: {
+      create: async (l) => {
+        chatLogs.push(l)
+      },
+    },
     projects: {
       list: async () => projects,
       get: async (slug) => projects.find((p) => p.slug === slug) ?? null,

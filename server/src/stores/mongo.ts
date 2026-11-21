@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import type { Project } from '../lib/projectsData.js'
+import { ChatLogModel } from '../models/ChatLog.js'
 import { MessageModel } from '../models/Message.js'
 import { ProjectModel } from '../models/Project.js'
 import type { Stores } from './types.js'
@@ -18,6 +19,11 @@ export function createMongoStores(): Stores {
     projects: {
       list: async () => ProjectModel.find({}, PROJECTION).sort({ order: 1 }).lean<Project[]>(),
       get: async (slug) => ProjectModel.findOne({ slug }, PROJECTION).lean<Project>(),
+    },
+    chatLogs: {
+      create: async (l) => {
+        await ChatLogModel.create(l)
+      },
     },
     messages: {
       create: async (m) => {

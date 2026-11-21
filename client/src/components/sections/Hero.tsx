@@ -1,6 +1,5 @@
 import { ArrowDownRight, FileDown, MessageCircle } from 'lucide-react'
 import { useRef } from 'react'
-import { Link } from 'react-router'
 import { LazyHeroScene } from '@/components/motion/LazyHeroScene'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { RoleRotator } from '@/components/motion/RoleRotator'
@@ -9,11 +8,13 @@ import { Button } from '@/components/ui/button'
 import { profile } from '@/content/profile'
 import { useIsoLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { gsap, MOTION_OK, SplitText } from '@/lib/motion'
+import { useChat } from '@/providers/chat-context'
 import { useIntro } from '@/providers/intro-context'
 
 export function Hero() {
   const root = useRef<HTMLElement>(null)
   const { introDone } = useIntro()
+  const chat = useChat()
 
   useIsoLayoutEffect(() => {
     const mm = gsap.matchMedia(root)
@@ -93,10 +94,8 @@ export function Hero() {
                 </a>
               </Button>
             </Magnetic>
-            <Button asChild size="lg" variant="ghost">
-              <Link to="/chat">
-                <MessageCircle aria-hidden /> Ask Shridhar
-              </Link>
+            <Button size="lg" variant="ghost" onClick={() => chat.setOpen(true)}>
+              <MessageCircle aria-hidden /> Ask Shridhar
             </Button>
           </div>
         </div>

@@ -7,7 +7,9 @@ import '@fontsource-variable/bricolage-grotesque'
 import '@fontsource-variable/geist'
 import '@fontsource-variable/geist-mono'
 import '@/styles/index.css'
+import { ChatProvider } from '@/providers/ChatProvider'
 import { IntroProvider } from '@/providers/IntroProvider'
+import { PaletteProvider } from '@/providers/PaletteProvider'
 import { SmoothScroll } from '@/providers/SmoothScroll'
 import { ThemeProvider } from '@/providers/ThemeProvider'
 import { router } from '@/router'
@@ -20,7 +22,11 @@ createRoot(document.getElementById('root')!).render(
         <MotionConfig reducedMotion="user">
           <SmoothScroll>
             <IntroProvider>
-              <RouterProvider router={router} />
+              <ChatProvider>
+                <PaletteProvider>
+                  <RouterProvider router={router} />
+                </PaletteProvider>
+              </ChatProvider>
             </IntroProvider>
           </SmoothScroll>
         </MotionConfig>

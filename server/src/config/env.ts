@@ -21,6 +21,12 @@ const EnvSchema = z.object({
     .optional()
     .or(z.literal('').transform(() => undefined)),
   CONTACT_FROM_EMAIL: z.string().default('Portfolio <onboarding@resend.dev>'),
+  // Optional: without it the chatbot answers from fixed resume templates (offline mode).
+  ANTHROPIC_API_KEY: optional,
+  CHAT_MODEL: z.string().default('claude-opus-5-5'),
+  CHAT_EFFORT: z.enum(['low', 'medium', 'high']).default('low'),
+  // Salt for the daily-rotating visitor hash in chat logs. Set a random value in production.
+  LOG_SALT: z.string().default('dev-salt'),
 })
 
 export type Env = z.infer<typeof EnvSchema>

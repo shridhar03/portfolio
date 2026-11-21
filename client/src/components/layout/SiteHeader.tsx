@@ -1,13 +1,16 @@
-import { Menu, X } from 'lucide-react'
+import { Command, Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { navLinks } from '@/content/profile'
+import { usePalette } from '@/providers/palette-context'
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const { pathname, hash } = useLocation()
+  const palette = usePalette()
+  const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
 
   // Close the mobile menu on navigation (React-recommended "adjust state on prop change" pattern).
   const [lastLoc, setLastLoc] = useState(pathname + hash)
@@ -50,6 +53,15 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => palette.setOpen(true)}
+            className="hidden h-10 items-center gap-2 rounded-pill border border-border px-3 text-sm text-muted transition-colors hover:text-fg sm:inline-flex"
+            aria-label="Open command palette"
+          >
+            <Command className="size-4" aria-hidden />
+            <kbd className="font-mono text-xs">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
+          </button>
           <ThemeToggle />
           <Button
             variant="outline"

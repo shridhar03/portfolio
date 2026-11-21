@@ -28,7 +28,7 @@ only use content from that spec. Unknown project details stay as `TODO`.
 │     ├─ routes/         one Router per resource (health; later projects, contact, chat)
 │     ├─ middleware/     error + 404 handlers
 │     └─ index.ts        listen()
-├─ shared/         projects.json: single source for project data (client reads it now; seeds MongoDB in Phase 4)
+├─ shared/         projects.json (seeds MongoDB) + profile.json (resume facts for the UI and the chatbot)
 ├─ scripts/        optimize-images.mjs (`npm run images`): assets-raw → client/public/img AVIF/WebP/JPEG
 └─ assets-raw/     source photos (profile-hills.jpg, speaking.jpg). Optimised copies go to client/public/img in Phase 2
 ```
@@ -96,6 +96,16 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - Collections: `projects` (seeded from `shared/projects.json` with `npm run seed -w server`, upsert by slug, `--prune` to delete removed ones), `messages` (contact form, with `sentiment {label, score}` and `emailed`), `chatLogs` (Phase 5, anonymised, 90-day TTL).
 - Endpoints: `GET /api/health` (reports storage + email mode), `GET /api/projects`, `GET /api/projects/:slug`, `POST /api/contact` (Zod-validated, honeypot field `website`, 5 per 15 min per IP, wink-nlp sentiment, Resend email with reply-to = visitor; email failure never fails the request).
 - Client reads projects through `hooks/useProjects.ts`: bundled JSON for first paint, then the API. All fetches go through `lib/api.ts` (`VITE_API_URL` base, timeout, `ApiError` with field errors).
+
+## Chatbot + command palette (Phase 5)
+
+- Resume facts live in `shared/profile.json` (client `content/profile.ts` re-exports it; the server builds the chatbot system prompt from it with `lib/resumeContext.ts`). Edit facts there once.
+- `POST /api/chat` body `{ messages: [{role, content}] }` (≤12 turns, ≤1000 chars each, last from user). Response is server-sent events over the POST: `meta {intent, mode}` → `delta {text}`… → `done` (or `error`). 20 requests / 10 min per IP.
+- Intent detection (`lib/intent.ts`, wink-nlp lemmas + stems + keyword sets): `resume | projects | contact | off-topic`. Off-topic and prompt-injection attempts get a fixed polite refusal with **no** model call; the system prompt also tells the model to stay on topic.
+- Model call (`lib/llm.ts`): Anthropic SDK, `client.beta.messages.stream`, model `CHAT_MODEL` (default `claude-opus-5-5`), `output_config.effort` = `CHAT_EFFORT` (default low), cached system prompt, server-side refusal fallback (`fallbacks: "default"`, beta `server-side-fallback-2026-07-01`). Without `ANTHROPIC_API_KEY` the offline provider streams fixed resume answers so the UI still works. The key never reaches the client.
+- `chatLogs` are anonymised: emails/phones/URLs scrubbed, IP replaced by a daily-rotating salted hash (`LOG_SALT`).
+- Client: `providers/ChatProvider.tsx` holds one conversation shared by the floating `ChatWidget` (launcher morphs into the panel via a shared `layoutId`) and the `/chat` page; `lib/sse.ts` parses the stream; `components/chat/RichText.tsx` renders a safe markdown subset (no HTML injection).
+- Command palette: `components/CommandPalette.tsx` (cmdk), ⌘K / Ctrl+K or the header button; sections, projects, theme toggle, chat, resume, contact. Scroll containers inside modals carry `data-lenis-prevent`.
 
 ## Conventions
 

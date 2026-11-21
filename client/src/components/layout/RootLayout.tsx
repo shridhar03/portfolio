@@ -1,6 +1,8 @@
 import { AnimatePresence, LayoutGroup } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { useLocation, useOutlet } from 'react-router'
+import { ChatWidget } from '@/components/chat/ChatWidget'
+import { CommandPalette } from '@/components/CommandPalette'
 import { CustomCursor } from '@/components/motion/CustomCursor'
 import { ScrollTrigger } from '@/lib/motion'
 import { useLenis } from '@/providers/lenis-context'
@@ -54,7 +56,9 @@ export function RootLayout() {
           </AnimatePresence>
         </LayoutGroup>
       </main>
-      <SiteFooter />
+      {location.pathname !== '/chat' && <SiteFooter />}
+      <ChatWidget />
+      <CommandPalette />
       <CustomCursor />
       <div className="grain" aria-hidden />
     </>
