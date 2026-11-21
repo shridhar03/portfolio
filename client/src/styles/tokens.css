@@ -1,0 +1,73 @@
+/*
+ * Design tokens. Single source of truth; documented in /CLAUDE.md.
+ * Raw palette lives in :root / [data-theme], Tailwind utilities map to it via @theme inline.
+ */
+
+:root,
+[data-theme='dark'] {
+  /* Midnight navy, echoing the jacket in the hero photo */
+  --bg: #070b16;
+  --surface: #0d1426;
+  --surface-2: #141d35;
+  --border: #233152;
+  --fg: #e9edf6;
+  --muted: #9aa6c2;
+  /* Saffron accent, echoing the gold piping on the jacket */
+  --accent: #ffa31a;
+  --accent-ink: #1a0f00; /* text on an accent fill */
+  --accent-fg: #ffb547; /* accent used as text on bg (AA ≥ 4.5:1) */
+  --navy-glow: #2b4c9a; /* secondary blob colour */
+  --grain-opacity: 0.07;
+  --blob-opacity: 0.35;
+}
+
+[data-theme='light'] {
+  --bg: #f6f3ec;
+  --surface: #ffffff;
+  --surface-2: #ece6da;
+  --border: #d8d0c0;
+  --fg: #0b1222;
+  --muted: #4b5672;
+  --accent: #f29a12;
+  --accent-ink: #1a0f00;
+  --accent-fg: #944a00; /* AA on light bg */
+  --navy-glow: #9db4e8;
+  --grain-opacity: 0.05;
+  --blob-opacity: 0.45;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-fg: var(--accent-fg);
+  --color-navy-glow: var(--navy-glow);
+}
+
+@theme {
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  /* Fluid type scale: 375px → 1440px viewport */
+  --text-body: clamp(1rem, 0.96rem + 0.19vw, 1.125rem);
+  --text-lead: clamp(1.125rem, 1.05rem + 0.38vw, 1.375rem);
+  --text-h3: clamp(1.375rem, 1.24rem + 0.56vw, 1.75rem);
+  --text-h2: clamp(2rem, 1.6rem + 1.69vw, 3.25rem);
+  --text-h1: clamp(2.75rem, 1.9rem + 3.75vw, 5.5rem);
+  --text-display: clamp(3.25rem, 1.8rem + 6.2vw, 8rem);
+
+  --radius-card: 1.25rem;
+  --radius-pill: 9999px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --spacing-section: clamp(5rem, 3.5rem + 6vw, 9rem);
+  --container-content: 76rem;
+}

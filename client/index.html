@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070b16" />
+    <meta
+      name="description"
+      content="Shridhar Chavan: MERN developer, AI/ML and NLP enthusiast, and vibe coder from Satara, India."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Shridhar Chavan · MERN Developer</title>
+    <script>
+      // Set theme before first paint to avoid a flash. Dark-first.
+      try {
+        if (localStorage.getItem('sc-theme') === 'light')
+          document.documentElement.dataset.theme = 'light'
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
