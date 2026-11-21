@@ -1,36 +1,33 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { HelmetProvider } from 'react-helmet-async'
-import { MotionConfig } from 'motion/react'
+import { createRoot, hydrateRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router'
 import '@fontsource-variable/bricolage-grotesque'
 import '@fontsource-variable/geist'
 import '@fontsource-variable/geist-mono'
 import '@/styles/index.css'
-import { ChatProvider } from '@/providers/ChatProvider'
-import { IntroProvider } from '@/providers/IntroProvider'
-import { PaletteProvider } from '@/providers/PaletteProvider'
-import { SmoothScroll } from '@/providers/SmoothScroll'
-import { ThemeProvider } from '@/providers/ThemeProvider'
+import { AppProviders } from '@/AppProviders'
 import { router } from '@/router'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <HelmetProvider>
-      <ThemeProvider>
-        {/* reducedMotion="user": Motion drops transform animations when the OS asks for less motion */}
-        <MotionConfig reducedMotion="user">
-          <SmoothScroll>
-            <IntroProvider>
-              <ChatProvider>
-                <PaletteProvider>
-                  <RouterProvider router={router} />
-                </PaletteProvider>
-              </ChatProvider>
-            </IntroProvider>
-          </SmoothScroll>
-        </MotionConfig>
-      </ThemeProvider>
-    </HelmetProvider>
-  </StrictMode>,
+// Static head tags from the prerender give way to the ones React manages per route.
+document.querySelectorAll('[data-prerender]').forEach((el) => el.remove())
+
+const container = document.getElementById('root')!
+const app = (
+  <AppProviders>
+    <RouterProvider router={router} />
+  </AppProviders>
 )
+
+if (container.hasChildNodes()) {
+  // Production: hydrate the prerendered HTML (scripts/prerender.mjs) once a lazy route's code is in.
+  const start = () => hydrateRoot(container, app)
+  if (router.state.initialized) start()
+  else {
+    const stop = router.subscribe((state) => {
+      if (!state.initialized) return
+      stop()
+      start()
+    })
+  }
+} else {
+  createRoot(container).render(app)
+}

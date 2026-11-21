@@ -1,3 +1,6 @@
+import { profile } from '@/content/profile'
+import { Seo } from '@/components/Seo'
+import { personJsonLd } from '@/lib/seo'
 import { useRef } from 'react'
 import { About } from '@/components/sections/About'
 import { Certifications } from '@/components/sections/Certifications'
@@ -17,6 +20,11 @@ export function HomePage() {
 
   return (
     <div ref={root}>
+      <Seo
+        description={`${profile.shortName}: ${profile.tagline}. MCA graduate from ${profile.location}.`}
+        path="/"
+        jsonLd={personJsonLd(profile)}
+      />
       <Hero />
       <TechMarquee />
       <About />

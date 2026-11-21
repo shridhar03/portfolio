@@ -21,11 +21,17 @@ export function Contact() {
   const update = (k: keyof ContactDraft) => (e: { target: { value: string } }) =>
     setDraft((d) => ({ ...d, [k]: e.target.value }))
 
+  // Move focus to the first invalid field so keyboard and screen-reader users land on the problem.
+  const focusFirstError = (errs: Partial<Record<keyof ContactDraft, string>>) => {
+    const first = (['name', 'email', 'message'] as const).find((k) => errs[k])
+    if (first) document.getElementById(`contact-${first}`)?.focus()
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     const errs = validateContact(draft)
     setErrors(errs)
-    if (Object.keys(errs).length) return
+    if (Object.keys(errs).length) return focusFirstError(errs)
     setStatus('sending')
     try {
       await api('/api/contact', {
@@ -36,11 +42,11 @@ export function Contact() {
       setDraft(empty)
     } catch (err) {
       if (err instanceof ApiError && err.status === 400 && err.fields) {
-        setErrors(
-          Object.fromEntries(
-            Object.entries(err.fields).map(([k, v]) => [k, v?.[0]]),
-          ) as typeof errs,
-        )
+        const fieldErrors = Object.fromEntries(
+          Object.entries(err.fields).map(([k, v]) => [k, v?.[0]]),
+        ) as typeof errs
+        setErrors(fieldErrors)
+        focusFirstError(fieldErrors)
         setStatus('idle')
       } else setStatus('error')
     }
@@ -56,7 +62,7 @@ export function Contact() {
       onChange: update(k),
       'aria-invalid': !!err,
       'aria-describedby': err ? `${id}-err` : undefined,
-      className: cn(fieldClass, err && 'border-red-400'),
+      className: cn(fieldClass, err && 'border-red-600 dark:border-red-400'),
     }
     return (
       <div>
@@ -69,7 +75,7 @@ export function Contact() {
           <textarea rows={5} {...common} />
         )}
         {err && (
-          <p id={`${id}-err`} className="mt-1.5 text-sm text-red-500 dark:text-red-300">
+          <p id={`${id}-err`} className="mt-1.5 text-sm text-red-700 dark:text-red-300">
             {err}
           </p>
         )}

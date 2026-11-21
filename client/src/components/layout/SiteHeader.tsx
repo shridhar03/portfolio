@@ -4,13 +4,15 @@ import { Link, useLocation } from 'react-router'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { navLinks } from '@/content/profile'
+import { useHydrated } from '@/hooks/useHydrated'
 import { usePalette } from '@/providers/palette-context'
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const { pathname, hash } = useLocation()
   const palette = usePalette()
-  const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
+  // Server/hydration render says Ctrl K; Apple devices switch to ⌘K once hydrated.
+  const isMac = useHydrated() && /Mac|iPhone|iPad/.test(navigator.platform)
 
   // Close the mobile menu on navigation (React-recommended "adjust state on prop change" pattern).
   const [lastLoc, setLastLoc] = useState(pathname + hash)
@@ -29,12 +31,9 @@ export function SiteHeader() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-transparent bg-bg/70 backdrop-blur-md supports-[backdrop-filter]:bg-bg/55">
       <div className="mx-auto flex max-w-content items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link
-          to="/"
-          className="font-display text-lg font-bold tracking-tight text-fg"
-          aria-label="Shridhar Chavan, home"
-        >
+        <Link to="/" className="font-display text-lg font-bold tracking-tight text-fg">
           SC<span className="text-accent-fg">.</span>
+          <span className="sr-only"> Shridhar Chavan, home</span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -56,10 +55,11 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => palette.setOpen(true)}
-            className="hidden h-10 items-center gap-2 rounded-pill border border-border px-3 text-sm text-muted transition-colors hover:text-fg sm:inline-flex"
-            aria-label="Open command palette"
+            className="hidden h-11 items-center gap-2 rounded-pill border border-border px-3 text-sm text-muted transition-colors hover:text-fg sm:inline-flex"
+            aria-keyshortcuts="Control+K Meta+K"
           >
             <Command className="size-4" aria-hidden />
+            <span className="sr-only">Open command palette, shortcut </span>
             <kbd className="font-mono text-xs">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
           </button>
           <ThemeToggle />

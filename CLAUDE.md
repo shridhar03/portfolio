@@ -19,8 +19,11 @@ only use content from that spec. Unknown project details stay as `TODO`.
 │     │  └─ sections/  (Phase 2) Hero, About, Skills, Experience, Projects, Education…
 │     ├─ content/      profile.ts (resume content) + projects.ts (typed wrapper over shared/projects.json)
 │     ├─ pages/        route components: HomePage, ProjectPage, ChatPage, NotFoundPage
-│     ├─ router.tsx    createBrowserRouter route table
-│     └─ main.tsx      entry: fonts, CSS, providers
+│     ├─ routes.tsx    route table (Home eager, other pages lazy); router.tsx = createBrowserRouter(routes)
+│     ├─ AppProviders.tsx  every provider, shared by main.tsx and entry-server.tsx
+│     ├─ entry-server.tsx  build-time render(path) used by the prerender
+│     └─ main.tsx      entry: fonts, CSS; hydrates the prerendered HTML (createRoot in dev)
+│  └─ scripts/     prerender.mjs (static HTML per route + sitemap/robots), serve.mjs (`preview`)
 ├─ server/         Express 5 + TypeScript (ESM, nodenext)
 │  └─ src/
 │     ├─ config/env.ts   Zod-validated env (add new vars here + .env.example)
@@ -29,14 +32,18 @@ only use content from that spec. Unknown project details stay as `TODO`.
 │     ├─ middleware/     error + 404 handlers
 │     └─ index.ts        listen()
 ├─ shared/         projects.json (seeds MongoDB) + profile.json (resume facts for the UI and the chatbot)
-├─ scripts/        optimize-images.mjs (`npm run images`): assets-raw → client/public/img AVIF/WebP/JPEG
+├─ scripts/        optimize-images.mjs (`npm run images`): assets-raw → client/public/img AVIF/WebP/JPEG;
+│                  brand-assets.mjs (`npm run brand`): og.jpg, app icons, site.webmanifest via Playwright
+├─ e2e/            Playwright smoke tests + axe (playwright.config.ts at the root)
 └─ assets-raw/     source photos (profile-hills.jpg, speaking.jpg). Optimised copies go to client/public/img in Phase 2
 ```
 
 ## Commands
 
 `npm install` · `npm run dev` (client :5173 + API :4000; Vite proxies `/api`) · `npm run lint` ·
-`npm run typecheck` · `npm test` · `npm run format` · `npm run build`
+`npm run typecheck` · `npm test` · `npm run format` · `npm run build` · `npm run e2e` (builds, starts
+fresh servers on :4100/:4174, runs desktop + mobile) · `npm run preview -w client` (serves dist like
+the static host, :4173 → API :4000) · `npm run brand` (regenerate OG image and icons)
 
 ## Design tokens (client/src/styles/tokens.css)
 
@@ -106,6 +113,17 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - `chatLogs` are anonymised: emails/phones/URLs scrubbed, IP replaced by a daily-rotating salted hash (`LOG_SALT`).
 - Client: `providers/ChatProvider.tsx` holds one conversation shared by the floating `ChatWidget` (launcher morphs into the panel via a shared `layoutId`) and the `/chat` page; `lib/sse.ts` parses the stream; `components/chat/RichText.tsx` renders a safe markdown subset (no HTML injection).
 - Command palette: `components/CommandPalette.tsx` (cmdk), ⌘K / Ctrl+K or the header button; sections, projects, theme toggle, chat, resume, contact. Scroll containers inside modals carry `data-lenis-prevent`.
+
+## Performance, SEO, accessibility (Phase 6)
+
+- **Prerender + hydrate.** `npm run build -w client` = `vite build` → SSR build of `entry-server.tsx` → `scripts/prerender.mjs`, which writes `dist/index.html`, `chat/index.html`, `projects/<slug>/index.html` (non-coming-soon) and `404.html`, plus `sitemap.xml` and `robots.txt` from `VITE_SITE_URL`. The host must serve clean URLs (`/chat` → `chat/index.html`) and `404.html` for misses; `client/scripts/serve.mjs` does exactly that locally.
+- The prerender replaces Vite's entry `<script>` with a small boot script that imports the app **after the hero portrait's LCP entry** (2 s cap; decode + next frame on browsers without LCP entries). Content is readable as plain HTML before JS.
+- **Hydration must match the prerender.** Anything that depends on the visitor (theme, fine pointer, reduced motion, first visit, platform) is gated on `useHydrated()` (`hooks/useHydrated.ts`) so the first client render equals the server one. No `Date`/random output in render (footer year uses `suppressHydrationWarning`). New lazy routes are fine: `main.tsx` waits for `router.state.initialized` before hydrating.
+- **Pre-paint classes** from the inline script in `index.html`: `motion-ok` (hides `[data-hero]` copy and closes the portrait curtain until GSAP reveals them, with a 4 s CSS failsafe) and `intro-pending` (first visit: a bg-coloured cover until the preloader has played). The portrait is never hidden, only covered, so it stays the LCP element.
+- **Head tags:** pages render `<Seo title description path [noindex] [jsonLd]>` (`components/Seo.tsx`, React 19 native `<title>/<meta>/<link>` hoisting; no Helmet). The prerender moves them into `<head>` with `data-prerender`; `main.tsx` removes those before React takes over, so each route owns its tags. JSON-LD `Person` on the home page comes from `lib/seo.ts` (resume facts only, no phone).
+- **Code splitting:** routes other than Home, the command palette (`CommandPaletteHost` owns ⌘K and loads cmdk on first open), the chat panel and the 3D scene are separate chunks. Scroll choreography is set up in idle steps (`lib/idle.ts`), immediately only when the URL has a `#hash`.
+- **Lighthouse (mobile, simulated):** home 91–96 performance, 100 accessibility / best practices / SEO; project and chat pages 99–100. Re-measure against `npm run preview -w client`, not `vite preview` (no clean URLs).
+- **A11y rules checked by `e2e/smoke.spec.ts` (axe, WCAG 2.2 AA, both themes):** icon buttons are 44px (`size-11`), visible text is part of each accessible name, `scroll-padding` keeps focus clear of the header and chat launcher, the role rotator has a pause button and pauses on hover, contact errors use red-700/red-300 and focus moves to the first invalid field. RootLayout sets `html[data-ready]` once hydrated (tests wait on it).
 
 ## Conventions
 

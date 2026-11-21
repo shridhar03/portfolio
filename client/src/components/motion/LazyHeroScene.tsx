@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTheme } from '@/providers/theme-context'
+import { onIdle } from '@/lib/idle'
 import { prefersReducedMotion } from '@/lib/motion'
 
 const HeroScene = lazy(() => import('./HeroScene'))
@@ -12,10 +13,7 @@ export function LazyHeroScene() {
   useEffect(() => {
     if (prefersReducedMotion() || !window.matchMedia('(min-width: 768px)').matches) return
     if (!document.createElement('canvas').getContext('webgl2')) return
-    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600))
-    const cancel = window.cancelIdleCallback ?? window.clearTimeout
-    const id = idle(() => setReady(true))
-    return () => cancel(id)
+    return onIdle(() => setReady(true), 2500)
   }, [])
 
   if (!ready) return null

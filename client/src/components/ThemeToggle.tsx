@@ -1,10 +1,12 @@
 import { Moon, Sun } from 'lucide-react'
+import { useHydrated } from '@/hooks/useHydrated'
 import { useTheme } from '@/providers/theme-context'
 import { Button } from '@/components/ui/button'
 
 export function ThemeToggle() {
   const { theme, toggle } = useTheme()
-  const isDark = theme === 'dark'
+  // The prerendered HTML is dark; match it until hydrated, then show the visitor's theme.
+  const isDark = !useHydrated() || theme === 'dark'
   return (
     <Button
       variant="outline"

@@ -4,10 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#070b16" />
-    <meta
-      name="description"
-      content="Shridhar Chavan: MERN developer, AI/ML and NLP enthusiast, and vibe coder from Satara, India."
-    />
     <link
       rel="preload"
       as="image"
@@ -17,13 +13,24 @@
       fetchpriority="high"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Shridhar Chavan · MERN Developer</title>
+    <title data-prerender>Shridhar Chavan · MERN Developer</title>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <script>
-      // Set theme before first paint to avoid a flash. Dark-first.
-      try {
-        if (localStorage.getItem('sc-theme') === 'light')
-          document.documentElement.dataset.theme = 'light'
-      } catch (e) {}
+      // Runs before first paint. Theme (dark-first) avoids a flash; the classes coordinate the
+      // prerendered HTML with the JS intro (see IntroProvider and the hero in index.css).
+      ;(function (d) {
+        try {
+          if (localStorage.getItem('sc-theme') === 'light') d.dataset.theme = 'light'
+        } catch (e) {}
+        if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return
+        d.classList.add('motion-ok')
+        var seen = null
+        try {
+          seen = sessionStorage.getItem('sc-visited') || localStorage.getItem('sc-visited')
+        } catch (e) {}
+        if (seen !== '1') d.classList.add('intro-pending')
+      })(document.documentElement)
     </script>
   </head>
   <body>

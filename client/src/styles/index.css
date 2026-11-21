@@ -7,11 +7,17 @@
 @layer base {
   html {
     color-scheme: dark;
+    /* Keep focused/anchored elements clear of the sticky header and the chat launcher. */
+    scroll-padding-top: 5.5rem;
+    scroll-padding-bottom: 6rem;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
   }
   html[data-theme='light'] {
     color-scheme: light;
+  }
+  :is(h1, h2, h3) {
+    text-wrap: balance;
   }
   body {
     @apply bg-bg font-body text-fg antialiased;
@@ -129,5 +135,33 @@ html.has-custom-cursor :is(input, textarea, [contenteditable]) {
   }
   .marquee-track [data-dup] {
     display: none;
+  }
+}
+
+/* ---------- Prerender ↔ JS handoff (Phase 6) ----------
+   index.html's inline script adds `motion-ok` and, on a first visit, `intro-pending` before
+   first paint. The prerendered hero copy and portrait curtain then start in their "before"
+   state so the JS reveal never flashes; the portrait itself is painted (it is the LCP image). */
+html.intro-pending body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: var(--color-bg);
+}
+[data-hero-curtain] {
+  transform: scaleY(0);
+}
+html.motion-ok [data-hero-curtain] {
+  transform: scaleY(1);
+}
+html.motion-ok [data-hero] {
+  visibility: hidden;
+  /* Failsafe: if the app never boots, show the copy anyway. */
+  animation: hero-failsafe 0s 4s forwards;
+}
+@keyframes hero-failsafe {
+  to {
+    visibility: visible;
   }
 }

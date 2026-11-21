@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
 import { ChatPanel } from '@/components/chat/ChatPanel'
@@ -6,6 +7,11 @@ import { ChatPanel } from '@/components/chat/ChatPanel'
 export function ChatPage() {
   return (
     <section className="relative isolate flex h-dvh flex-col overflow-hidden pt-20">
+      <Seo
+        title="Ask Shridhar"
+        description="Chat with an assistant that answers questions about Shridhar Chavan's resume, skills and projects."
+        path="/chat"
+      />
       <div className="blob -top-40 left-1/4 -z-10 size-[30rem]" aria-hidden />
       <div className="mx-auto w-full max-w-3xl px-4 pt-6 sm:px-6">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-fg">

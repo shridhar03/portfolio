@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo'
 import { motion, useReducedMotion } from 'motion/react'
 import { useRef } from 'react'
 import { Sun } from 'lucide-react'
@@ -17,6 +18,12 @@ export function NotFoundPage() {
 
   return (
     <section className="relative isolate flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 pt-24 pb-40 text-center sm:px-6">
+      <Seo
+        title="Page not found"
+        description="This page wandered off the trail."
+        path="/404"
+        noindex
+      />
       {/* Rolling hills, a nod to the hero photo */}
       <svg
         className="absolute inset-x-0 bottom-0 -z-10 h-1/3 w-full text-surface-2"

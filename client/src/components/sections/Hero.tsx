@@ -19,9 +19,11 @@ export function Hero() {
   useIsoLayoutEffect(() => {
     const mm = gsap.matchMedia(root)
     mm.add(MOTION_OK, () => {
-      // Hide until the preloader finishes, then reveal.
+      // Hide the copy until the preloader finishes, then reveal. The portrait stays painted
+      // underneath a curtain, so it is the LCP element from the very first frame.
       if (!introDone) {
         gsap.set('[data-hero]', { autoAlpha: 0 })
+        gsap.set('[data-hero-curtain]', { scaleY: 1 })
         return
       }
       const split = SplitText.create('#hero-title', { type: 'chars,lines', mask: 'lines' })
@@ -29,11 +31,8 @@ export function Hero() {
       tl.set('[data-hero]', { autoAlpha: 1 })
         .from(split.chars, { yPercent: 115, duration: 1.1, stagger: 0.035 })
         .from('[data-hero-fade]', { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0.25)
-        .from(
-          '[data-hero-photo]',
-          { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.08, duration: 1.3 },
-          0.1,
-        )
+        .fromTo('[data-hero-curtain]', { scaleY: 1 }, { scaleY: 0, duration: 1.1 }, 0.1)
+        .from('[data-hero-photo] img', { scale: 1.08, duration: 1.3 }, 0.1)
       // Subtle parallax on the portrait while scrolling out of the hero.
       gsap.to('[data-hero-photo] img', {
         yPercent: 8,
@@ -100,7 +99,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-sm lg:col-span-5 lg:max-w-none" data-hero>
+        <div className="relative mx-auto w-full max-w-sm lg:col-span-5 lg:max-w-none">
           <div
             data-hero-photo
             className="relative overflow-hidden rounded-t-[999px] rounded-b-card border border-border bg-surface shadow-2xl shadow-black/30"
@@ -117,6 +116,11 @@ export function Hero() {
             />
             <div
               className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-bg/80 to-transparent"
+              aria-hidden
+            />
+            <div
+              data-hero-curtain
+              className="pointer-events-none absolute inset-0 origin-top bg-surface"
               aria-hidden
             />
           </div>

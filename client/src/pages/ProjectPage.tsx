@@ -1,3 +1,4 @@
+import { Seo } from '@/components/Seo'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link, useParams } from 'react-router'
@@ -20,6 +21,7 @@ export function ProjectPage() {
 
   return (
     <article className="relative isolate overflow-hidden">
+      <Seo title={project.title} description={project.summary} path={`/projects/${project.slug}`} />
       <div className="blob -top-40 right-0 -z-10 size-[30rem]" aria-hidden />
       <div className="mx-auto max-w-content px-4 pt-32 pb-section sm:px-6">
         <Link

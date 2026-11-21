@@ -61,17 +61,6 @@ export function CommandPalette() {
   const chat = useChat()
   const projects = useProjects().filter((p) => p.status !== 'coming-soon')
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setOpen(!open)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open, setOpen])
-
   // Pause smooth scrolling under the modal.
   useEffect(() => {
     if (!lenis) return

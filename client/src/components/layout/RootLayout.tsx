@@ -2,7 +2,7 @@ import { AnimatePresence, LayoutGroup } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { useLocation, useOutlet } from 'react-router'
 import { ChatWidget } from '@/components/chat/ChatWidget'
-import { CommandPalette } from '@/components/CommandPalette'
+import { CommandPaletteHost } from '@/components/CommandPaletteHost'
 import { CustomCursor } from '@/components/motion/CustomCursor'
 import { ScrollTrigger } from '@/lib/motion'
 import { useLenis } from '@/providers/lenis-context'
@@ -31,6 +31,11 @@ export function RootLayout() {
     ScrollTrigger.refresh()
   }
 
+  // Marks the app as live (hydrated, listeners attached). Used by the e2e smoke tests.
+  useEffect(() => {
+    document.documentElement.dataset.ready = ''
+  }, [])
+
   useEffect(() => {
     if (location.hash) return
     if (lenis) lenis.scrollTo(0, { immediate: true, force: true })
@@ -58,7 +63,7 @@ export function RootLayout() {
       </main>
       {location.pathname !== '/chat' && <SiteFooter />}
       <ChatWidget />
-      <CommandPalette />
+      <CommandPaletteHost />
       <CustomCursor />
       <div className="grain" aria-hidden />
     </>

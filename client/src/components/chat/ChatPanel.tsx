@@ -150,13 +150,13 @@ export function ChatPanel({
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={onKeyDown}
             placeholder="Ask a question…"
-            className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2 text-[0.95rem] text-fg placeholder:text-muted/80 focus:outline-none"
+            className="max-h-32 min-h-11 flex-1 resize-none bg-transparent px-2.5 py-2 text-[0.95rem] text-fg placeholder:text-muted/80 focus:outline-none"
           />
           {messages.length > 0 && !streaming && (
             <button
               type="button"
               onClick={reset}
-              className="grid size-10 place-items-center rounded-xl text-muted hover:text-fg"
+              className="grid size-11 place-items-center rounded-xl text-muted hover:text-fg"
               aria-label="Start a new conversation"
             >
               <RotateCcw className="size-4" aria-hidden />
@@ -166,7 +166,7 @@ export function ChatPanel({
             <button
               type="button"
               onClick={stop}
-              className="grid size-10 place-items-center rounded-xl bg-fg text-bg"
+              className="grid size-11 place-items-center rounded-xl bg-fg text-bg"
               aria-label="Stop generating"
             >
               <Square className="size-3.5 fill-current" aria-hidden />
@@ -175,7 +175,7 @@ export function ChatPanel({
             <button
               type="submit"
               disabled={!draft.trim()}
-              className="grid size-10 place-items-center rounded-xl bg-accent text-accent-ink transition-opacity disabled:opacity-40"
+              className="grid size-11 place-items-center rounded-xl bg-accent text-accent-ink transition-opacity disabled:opacity-40"
               aria-label="Send"
             >
               <ArrowUp className="size-4" aria-hidden />

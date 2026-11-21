@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { useHydrated } from '@/hooks/useHydrated'
 import { hasFinePointer, prefersReducedMotion } from '@/lib/motion'
 
 const INTERACTIVE =
@@ -7,7 +8,8 @@ const INTERACTIVE =
 
 /** Dot + trailing ring. Ring grows over interactive elements. Mouse-only, off for reduced motion. */
 export function CustomCursor() {
-  const [enabled] = useState(() => hasFinePointer() && !prefersReducedMotion())
+  const [canShow] = useState(() => hasFinePointer() && !prefersReducedMotion())
+  const enabled = useHydrated() && canShow
   const [hover, setHover] = useState(false)
   const [visible, setVisible] = useState(false)
   const x = useMotionValue(-100)

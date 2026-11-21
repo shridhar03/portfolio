@@ -18,10 +18,14 @@
     "format:check": "prettier --check .",
     "typecheck": "npm run typecheck -w client && npm run typecheck -w server",
     "test": "npm run test -w client && npm run test -w server",
-    "images": "node scripts/optimize-images.mjs"
+    "images": "node scripts/optimize-images.mjs",
+    "brand": "node scripts/brand-assets.mjs",
+    "e2e": "playwright test --trace off"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "concurrently": "^10.0.7",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",

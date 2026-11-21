@@ -1,9 +1,10 @@
 import { Maximize2, MessageCircle, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
 import { useChat } from '@/providers/chat-context'
-import { ChatPanel } from './ChatPanel'
+
+const ChatPanel = lazy(() => import('./ChatPanel').then((m) => ({ default: m.ChatPanel })))
 
 /** Floating launcher that morphs (shared layoutId) into the chat panel. Hidden on /chat. */
 export function ChatWidget() {
@@ -54,7 +55,7 @@ export function ChatWidget() {
                 <Link
                   to="/chat"
                   onClick={() => setOpen(false)}
-                  className="grid size-9 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-fg"
+                  className="grid size-11 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-fg"
                   aria-label="Open full-screen chat"
                 >
                   <Maximize2 className="size-4" aria-hidden />
@@ -62,14 +63,22 @@ export function ChatWidget() {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="grid size-9 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-fg"
+                  className="grid size-11 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-fg"
                   aria-label="Close chat"
                 >
                   <X className="size-4" aria-hidden />
                 </button>
               </div>
             </motion.header>
-            <ChatPanel autoFocus />
+            <Suspense
+              fallback={
+                <p className="grid flex-1 place-items-center text-sm text-muted" role="status">
+                  Loading chat…
+                </p>
+              }
+            >
+              <ChatPanel autoFocus />
+            </Suspense>
           </motion.section>
         ) : (
           <motion.button

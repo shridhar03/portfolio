@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useHydrated } from '@/hooks/useHydrated'
 import { Preloader } from '@/components/motion/Preloader'
 import { prefersReducedMotion } from '@/lib/motion'
 import { shouldShowPreloader, VISITED_KEY } from '@/lib/preloader'
@@ -13,8 +14,11 @@ function readVisited() {
 }
 
 export function IntroProvider({ children }: { children: ReactNode }) {
-  const [showPreloader] = useState(() =>
-    shouldShowPreloader({ visited: readVisited(), reducedMotion: prefersReducedMotion() }),
+  // Never during the build-time prerender: the static HTML is the content, not the intro.
+  const [showPreloader] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      shouldShowPreloader({ visited: readVisited(), reducedMotion: prefersReducedMotion() }),
   )
   const [introDone, setIntroDone] = useState(!showPreloader)
 
@@ -27,10 +31,17 @@ export function IntroProvider({ children }: { children: ReactNode }) {
     setIntroDone(true)
   }, [])
 
+  // index.html covers the prerendered page with `intro-pending` on a first visit until the
+  // preloader has played; lift it once the intro is over (or was never needed).
+  useEffect(() => {
+    if (introDone) document.documentElement.classList.remove('intro-pending')
+  }, [introDone])
+
+  const hydrated = useHydrated()
   const value = useMemo(() => ({ introDone, finishIntro }), [introDone, finishIntro])
   return (
     <IntroContext.Provider value={value}>
-      {showPreloader && !introDone && <Preloader onDone={finishIntro} />}
+      {hydrated && showPreloader && !introDone && <Preloader onDone={finishIntro} />}
       {children}
     </IntroContext.Provider>
   )
