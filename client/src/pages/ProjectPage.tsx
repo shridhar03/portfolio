@@ -2,12 +2,13 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link, useParams } from 'react-router'
 import { Button } from '@/components/ui/button'
-import { getProject, isTodo } from '@/content/projects'
+import { isTodo } from '@/content/projects'
+import { useProject } from '@/hooks/useProjects'
 import { NotFoundPage } from './NotFoundPage'
 
 export function ProjectPage() {
   const { slug = '' } = useParams()
-  const project = getProject(slug)
+  const project = useProject(slug)
   if (!project || project.status === 'coming-soon' || !project.caseStudy) return <NotFoundPage />
 
   const { caseStudy: cs, links } = project

@@ -90,6 +90,13 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - Route transitions: `AnimatePresence mode="wait"` in `RootLayout`, keyed by pathname, with a frozen outlet. Project title/cover share `layoutId`s between card and case study.
 - Animate only `transform` and `opacity` (clip-path on the hero photo reveal is the one exception, a one-off on load).
 
+## API (Phase 4)
+
+- `createApp({ env, stores, mailer })` takes its dependencies, so tests inject in-memory stores and a fake mailer. Storage lives behind `stores/types.ts` (`Stores`): `stores/mongo.ts` (Mongoose) in prod, `stores/memory.ts` for tests and DB-less local dev.
+- Collections: `projects` (seeded from `shared/projects.json` with `npm run seed -w server`, upsert by slug, `--prune` to delete removed ones), `messages` (contact form, with `sentiment {label, score}` and `emailed`), `chatLogs` (Phase 5, anonymised, 90-day TTL).
+- Endpoints: `GET /api/health` (reports storage + email mode), `GET /api/projects`, `GET /api/projects/:slug`, `POST /api/contact` (Zod-validated, honeypot field `website`, 5 per 15 min per IP, wink-nlp sentiment, Resend email with reply-to = visitor; email failure never fails the request).
+- Client reads projects through `hooks/useProjects.ts`: bundled JSON for first paint, then the API. All fetches go through `lib/api.ts` (`VITE_API_URL` base, timeout, `ApiError` with field errors).
+
 ## Conventions
 
 - TypeScript strict everywhere. Import client code via `@/…`. Server imports use `.js` suffixes (nodenext ESM).

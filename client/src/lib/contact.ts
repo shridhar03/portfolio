@@ -10,7 +10,7 @@ export function validateContact(d: ContactDraft) {
   return errors
 }
 
-/** Phase 2 fallback until POST /api/contact exists: open the visitor's mail app. */
+/** Fallback when the API is unreachable: open the visitor's mail app with the draft. */
 export function mailtoHref(to: string, d: ContactDraft) {
   const subject = `Portfolio enquiry from ${d.name.trim()}`
   const body = `${d.message.trim()}\n\n${d.name.trim()} <${d.email.trim()}>`

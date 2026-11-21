@@ -1,7 +1,8 @@
 import { ProjectCard } from '@/components/ProjectCard'
-import { projects } from '@/content/projects'
+import { useProjects } from '@/hooks/useProjects'
 
 export function Projects() {
+  const projects = useProjects()
   return (
     <section
       id="projects"
