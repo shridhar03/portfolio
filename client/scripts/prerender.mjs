@@ -1,5 +1,6 @@
 // Build step: renders each public route to static HTML (dist/<route>/index.html) and writes
 // sitemap.xml + robots.txt. Run after `vite build` and the SSR build (see package.json "build").
+import { createHash } from 'node:crypto'
 import { readFile, rm, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -17,6 +18,35 @@ if (!siteUrl) {
   )
 }
 const origin = siteUrl || 'http://localhost:4173'
+const apiOrigin = env.VITE_API_URL ? new URL(env.VITE_API_URL).origin : ''
+
+/**
+ * Content-Security-Policy as a <meta> tag, so it ships with the static files on any host. Inline
+ * scripts (theme + boot) are allowed by hash only; JSON-LD is data, not script, so CSP skips it.
+ * style-src keeps 'unsafe-inline' for the style attributes React and the animation libraries set.
+ */
+function csp(html) {
+  const hashes = [
+    ...html.matchAll(
+      /<script(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>([\s\S]*?)<\/script>/g,
+    ),
+  ].map(([, code]) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`)
+  const directives = [
+    `default-src 'self'`,
+    `script-src 'self' ${hashes.join(' ')}`,
+    `style-src 'self' 'unsafe-inline'`,
+    `img-src 'self' data: blob:`,
+    `font-src 'self'`,
+    `connect-src 'self'${apiOrigin ? ` ${apiOrigin}` : ''}`,
+    `worker-src 'self' blob:`,
+    `manifest-src 'self'`,
+    `object-src 'none'`,
+    `base-uri 'self'`,
+    `form-action 'self'`,
+    ...(origin.startsWith('https://') ? ['upgrade-insecure-requests'] : []),
+  ]
+  return `<meta http-equiv="Content-Security-Policy" content="${directives.join('; ')}" />`
+}
 
 const projects = JSON.parse(await readFile(path.join(root, '../shared/projects.json'), 'utf8'))
 const projectRoutes = projects
@@ -79,11 +109,12 @@ for (const page of pages) {
     .replace(/<title[^>]*>[\s\S]*?<\/title>\s*/, '')
     .replace('</head>', `  ${head}\n  </head>`)
     .replace('<div id="root"></div>', `<div id="root">${html}</div>`)
+  const final = out.replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    ${csp(out)}`)
   const file = path.join(dist, page.file)
   await mkdir(path.dirname(file), { recursive: true })
-  await writeFile(file, out)
+  await writeFile(file, final)
   console.log(
-    `[prerender] ${page.route} → dist/${page.file} (${(out.length / 1024).toFixed(1)} kB)`,
+    `[prerender] ${page.route} → dist/${page.file} (${(final.length / 1024).toFixed(1)} kB)`,
   )
 }
 

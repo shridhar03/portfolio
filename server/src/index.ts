@@ -6,7 +6,7 @@ import { loadProfile } from './lib/profileData.js'
 import { buildSystemPrompt } from './lib/resumeContext.js'
 import { loadSeedProjects } from './lib/projectsData.js'
 import { createMemoryStores } from './stores/memory.js'
-import { connectMongo, createMongoStores } from './stores/mongo.js'
+import { connectMongo, createMongoStores, disconnectMongo } from './stores/mongo.js'
 import type { Stores } from './stores/types.js'
 
 const env = loadEnv()
@@ -35,6 +35,21 @@ if (provider.kind === 'offline')
 if (env.NODE_ENV === 'production' && env.LOG_SALT === 'dev-salt')
   console.warn('Set LOG_SALT in production')
 
-createApp({ env, stores, mailer, chat: { provider, system } }).listen(env.PORT, () => {
-  console.log(`API listening on http://localhost:${env.PORT}`)
-})
+const server = createApp({ env, stores, mailer, chat: { provider, system } }).listen(
+  env.PORT,
+  () => {
+    console.log(`API listening on http://localhost:${env.PORT}`)
+  },
+)
+
+// Hosts stop instances with SIGTERM on every deploy: finish in-flight requests, then close the DB.
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+  process.once(signal, () => {
+    console.log(`${signal} received, shutting down`)
+    server.close(async () => {
+      if (stores.kind === 'mongo') await disconnectMongo()
+      process.exit(0)
+    })
+    setTimeout(() => process.exit(1), 10_000).unref()
+  })
+}

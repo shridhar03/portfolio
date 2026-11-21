@@ -13,6 +13,8 @@ export async function connectMongo(uri: string) {
   return mongoose.connection
 }
 
+export const disconnectMongo = () => mongoose.disconnect()
+
 export function createMongoStores(): Stores {
   return {
     kind: 'mongo',

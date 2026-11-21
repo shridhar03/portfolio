@@ -1,0 +1,41 @@
+# Render Blueprint for the API (https://render.com/docs/blueprint-spec).
+# New → Blueprint → pick this repo. Values marked `sync: false` are asked for once in the dashboard;
+# they are secrets or deployment-specific and never live in git.
+services:
+  - type: web
+    name: shridhar-portfolio-api
+    runtime: node
+    plan: free # sleeps after 15 min idle; the first request then takes ~30-60 s
+    region: singapore
+    branch: main
+    buildCommand: npm ci --include=dev && npm run build -w server
+    startCommand: npm run start -w server
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths: [server/**, shared/**, package.json, package-lock.json, render.yaml]
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: '22'
+      - key: TRUST_PROXY
+        value: '1'
+      - key: CLIENT_ORIGIN # e.g. https://your-domain.com,https://your-project.vercel.app
+        sync: false
+      - key: MONGODB_URI # MongoDB Atlas connection string (required in production)
+        sync: false
+      - key: RESEND_API_KEY # optional: contact-form emails
+        sync: false
+      - key: CONTACT_TO_EMAIL
+        sync: false
+      - key: CONTACT_FROM_EMAIL
+        sync: false
+      - key: ANTHROPIC_API_KEY # optional: live chatbot; offline answers without it
+        sync: false
+      - key: CHAT_MODEL
+        value: claude-opus-5-5
+      - key: CHAT_EFFORT
+        value: low
+      - key: LOG_SALT
+        generateValue: true

@@ -125,6 +125,15 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - **Lighthouse (mobile, simulated):** home 91–96 performance, 100 accessibility / best practices / SEO; project and chat pages 99–100. Re-measure against `npm run preview -w client`, not `vite preview` (no clean URLs).
 - **A11y rules checked by `e2e/smoke.spec.ts` (axe, WCAG 2.2 AA, both themes):** icon buttons are 44px (`size-11`), visible text is part of each accessible name, `scroll-padding` keeps focus clear of the header and chat launcher, the role rotator has a pause button and pauses on hover, contact errors use red-700/red-300 and focus moves to the first invalid field. RootLayout sets `html[data-ready]` once hydrated (tests wait on it).
 
+## Deploy (Phase 7)
+
+- **Site → Vercel** via root `vercel.json` (repo root as Root Directory, `npm ci`, `npm run build -w client`, output `client/dist`, `cleanUrls`, security + cache headers). Build-time env: `VITE_SITE_URL`, `VITE_API_URL`.
+- **API → Render** via `render.yaml` (free plan, Singapore, `npm ci --include=dev && npm run build -w server`, `npm run start -w server`, health check `/api/health`). Secrets are `sync: false` and entered in the dashboard; `LOG_SALT` is generated. The server reads `shared/*.json` at runtime, so deploy the whole repo, not just `server/`.
+- `CLIENT_ORIGIN` accepts a comma-separated list; `TRUST_PROXY` (default 1) sets Express proxy hops; SIGTERM/SIGINT close the server and Mongo cleanly.
+- **CSP:** the prerender adds a `<meta http-equiv="Content-Security-Policy">` to every page, allowing inline scripts only by sha256 hash and `connect-src` only to self + the `VITE_API_URL` origin. Changing the inline theme/boot script is fine (hashes are recomputed per build); adding a third-party script, font or API host needs a CSP change in `client/scripts/prerender.mjs`. Header-only rules (`X-Frame-Options`, etc.) live in `vercel.json`.
+- **CI:** `.github/workflows/ci.yml` runs lint, format check, typecheck, unit/API tests, build, then the Playwright suite.
+- The full setup and deploy guide for humans is `README.md`; keep it in sync when env vars or commands change.
+
 ## Conventions
 
 - TypeScript strict everywhere. Import client code via `@/…`. Server imports use `.js` suffixes (nodenext ESM).

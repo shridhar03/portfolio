@@ -28,6 +28,16 @@ async function visit(
 }
 
 async function axe(page: Page) {
+  // Measure contrast on final colours: wait until nothing on screen is mid-fade (GSAP/Motion set
+  // inline opacity).
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll<HTMLElement>('[style*="opacity"]')].every((el) => {
+      const o = Number(getComputedStyle(el).opacity)
+      const r = el.getBoundingClientRect()
+      const offscreen = r.bottom < 0 || r.top > innerHeight // e.g. scroll-scrubbed experience steps
+      return offscreen || o === 0 || o === 1 || el.closest('[aria-hidden="true"]')
+    }),
+  )
   // The film grain and WebGL canvas are decorative; everything else must pass WCAG 2.2 AA.
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG).analyze()
   expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(' | ')}`)).toEqual([])

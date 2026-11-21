@@ -51,6 +51,26 @@ describe('health', () => {
     const res = await request(setup().app).get('/api/health').set('Origin', 'http://localhost:5173')
     expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5173')
   })
+  it('allows each origin in a comma-separated CLIENT_ORIGIN and nothing else', async () => {
+    const multi = loadEnv({
+      NODE_ENV: 'test',
+      CLIENT_ORIGIN: 'https://shridhar.dev, https://portfolio.vercel.app/',
+    })
+    expect(multi.CLIENT_ORIGIN).toEqual(['https://shridhar.dev', 'https://portfolio.vercel.app'])
+    const app = createApp({
+      env: multi,
+      stores: createMemoryStores(loadSeedProjects()),
+      mailer: { enabled: false, sendContactNotification: async () => false },
+      chat: { provider: echoProvider, system: 'test' },
+    })
+    const ok = await request(app).get('/api/health').set('Origin', 'https://portfolio.vercel.app')
+    expect(ok.headers['access-control-allow-origin']).toBe('https://portfolio.vercel.app')
+    const bad = await request(app).get('/api/health').set('Origin', 'https://evil.example')
+    expect(bad.headers['access-control-allow-origin']).toBeUndefined()
+  })
+  it('rejects a malformed CLIENT_ORIGIN', () => {
+    expect(() => loadEnv({ NODE_ENV: 'test', CLIENT_ORIGIN: 'not a url' })).toThrow()
+  })
   it('returns JSON 404 for unknown routes', async () => {
     expect((await request(setup().app).get('/api/nope')).status).toBe(404)
   })
