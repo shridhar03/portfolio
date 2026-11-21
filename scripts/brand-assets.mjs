@@ -50,6 +50,26 @@ p { font-size: 28px; color: #9db3a6; margin-top: 32px; line-height: 1.35; text-w
 <div class="photo"><img src="${photo}" alt=""></div>
 <svg class="ridge" viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0 118 76 112 138 72 262 66 302 92 362 88 424 52 562 46 604 80 682 84 742 60 862 57 904 94 982 97 1044 64 1182 60 1222 88 1302 91 1362 70 1440 72V200H0Z" fill="#162b22"/><path d="M0 152 118 147 168 118 302 113 342 141 472 145 522 112 642 107 692 141 822 147 872 121 1012 116 1062 147 1182 151 1232 125 1342 120 1392 145 1440 147V200H0Z" fill="#0f1e18"/><path d="M424 52 562 46" stroke="#e8a33a" stroke-width="4" stroke-linecap="round"/></svg>`
 
+// LinkedIn profile banner (1584×396). LinkedIn covers the bottom-left with the profile photo, so
+// the copy sits on the right half. Saved to assets/ (not served by the site).
+const banner = `<style>${base}
+body { width: 1584px; height: 396px; position: relative; }
+.blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .4; }
+.copy { position: absolute; right: 96px; top: 70px; text-align: right; }
+.eyebrow { font-family: M; font-size: 18px; letter-spacing: .22em; text-transform: uppercase; color: #f0b85a; }
+h1 { font-family: D; font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -.03em; margin-top: 14px; }
+p { font-size: 24px; color: #9db3a6; margin-top: 16px; }
+.ridge { position: absolute; left: 0; right: 0; bottom: 0; width: 1584px; height: 120px; }
+</style>
+<div class="blob" style="width:520px;height:520px;right:-120px;top:-260px;background:#e8a33a"></div>
+<div class="blob" style="width:620px;height:520px;left:-200px;bottom:-300px;background:#2f5a4a"></div>
+<div class="copy">
+  <div class="eyebrow">${profile.location}</div>
+  <h1>Shridhar Chavan</h1>
+  <p>${profile.tagline}</p>
+</div>
+<svg class="ridge" viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0 118 76 112 138 72 262 66 302 92 362 88 424 52 562 46 604 80 682 84 742 60 862 57 904 94 982 97 1044 64 1182 60 1222 88 1302 91 1362 70 1440 72V200H0Z" fill="#162b22"/><path d="M0 152 118 147 168 118 302 113 342 141 472 145 522 112 642 107 692 141 822 147 872 121 1012 116 1062 147 1182 151 1232 125 1342 120 1392 145 1440 147V200H0Z" fill="#0f1e18"/><path d="M1044 64 1182 60" stroke="#e8a33a" stroke-width="4" stroke-linecap="round"/></svg>`
+
 const icon = (size) => `<style>${base}
 body { width: ${size}px; height: ${size}px; display: grid; place-items: center; }
 span { font-family: D; font-weight: 800; font-size: ${size * 0.44}px; letter-spacing: -.04em; }
@@ -68,6 +88,7 @@ const shot = async (html, width, height, file) => {
   console.log(`[brand] ${file}`)
 }
 await shot(og, 1200, 630, 'og.jpg')
+await shot(banner, 1584, 396, '../../assets/linkedin-banner.png')
 await shot(icon(180), 180, 180, 'apple-touch-icon.png')
 await shot(icon(192), 192, 192, 'icon-192.png')
 await shot(icon(512), 512, 512, 'icon-512.png')

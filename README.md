@@ -76,7 +76,8 @@ the services you want to try.
 | `npm test`                              | Vitest unit tests (client) + API tests with supertest (server)             |
 | `npm run e2e`                           | Builds and runs the Playwright smoke suite (desktop + mobile, offline API) |
 | `npm run seed -w server`                | Upserts `shared/projects.json` into MongoDB (`-- --prune` removes others)  |
-| `npm run images` / `brand`              | Regenerates the optimised photos / the OG image and app icons              |
+| `npm run images` / `brand`              | Regenerates the optimised photos / the OG image, icons and LinkedIn banner |
+| `npm run resume`                        | Renders `client/public/Shridhar_Chavan_Resume.pdf` from the resume JSON    |
 
 ## Environment variables
 
@@ -181,7 +182,6 @@ project details are `TODO` and render as placeholders.
 
 Still to add:
 
-- `client/public/Shridhar_Chavan_Resume.pdf`, the file behind the hero **Resume** button.
 - Live/repository links and case-study details for the projects marked `TODO`.
 
 ## Quality checks

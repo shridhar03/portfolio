@@ -20,6 +20,7 @@
     "test": "npm run test -w client && npm run test -w server",
     "images": "node scripts/optimize-images.mjs",
     "brand": "node scripts/brand-assets.mjs",
+    "resume": "node scripts/resume-pdf.mjs",
     "e2e": "playwright test --trace off"
   },
   "devDependencies": {
