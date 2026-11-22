@@ -11,7 +11,8 @@ export const MOTION_OK = '(prefers-reduced-motion: no-preference)'
 export const DESKTOP = '(min-width: 1024px)'
 export const FINE_POINTER = '(hover: hover) and (pointer: fine)'
 
-export const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const
+export * from './motion-tokens'
+export const MOBILE = '(max-width: 1023px)'
 
 export function prefersReducedMotion() {
   return (

@@ -5,12 +5,14 @@ import { cn } from '@/lib/utils'
 
 // shadcn/ui-style primitive, restyled with the portfolio tokens.
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-pill font-medium transition-[transform,opacity,background-color,color] duration-300 ease-out-expo disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-pill font-medium transition-[transform,translate,opacity,background-color,border-color,color,box-shadow] duration-300 ease-out-expo active:translate-y-0 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        primary: 'bg-accent text-accent-ink hover:opacity-90 active:scale-[0.97]',
-        outline: 'border border-border bg-transparent text-fg hover:bg-surface-2',
+        primary:
+          'bg-accent text-accent-ink hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-12px_var(--color-accent)] hover:brightness-110',
+        outline:
+          'border border-border bg-transparent text-fg hover:-translate-y-0.5 hover:border-accent/60 hover:bg-surface-2',
         ghost: 'text-fg hover:bg-surface-2',
       },
       size: {

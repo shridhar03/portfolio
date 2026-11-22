@@ -2,7 +2,8 @@ import { profile } from '@/content/profile'
 
 /**
  * A full-bleed red band with one line in the owner's own words (profile.motto, taken from the
- * story). Loud on purpose: it breaks the page between Experience and Projects.
+ * story). Loud on purpose: it breaks the page between Experience and Projects. The line drifts
+ * sideways with scroll ([data-drift]); it never fades, so it is always readable.
  */
 export function Manifesto() {
   return (
@@ -13,7 +14,10 @@ export function Manifesto() {
       />
       <figure className="mx-auto max-w-content px-4 py-16 sm:px-6 sm:py-24" data-reveal>
         <blockquote>
-          <p className="slant max-w-5xl font-display text-[clamp(2.5rem,1.6rem+4vw,6rem)] leading-[0.95] text-accent-ink uppercase">
+          <p
+            data-drift
+            className="slant max-w-5xl font-display text-[clamp(2.5rem,1.6rem+4vw,6rem)] leading-[0.95] text-accent-ink uppercase"
+          >
             {profile.motto}
           </p>
         </blockquote>

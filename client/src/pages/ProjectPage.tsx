@@ -7,6 +7,7 @@ import { isTodo } from '@/content/projects'
 import { useProject } from '@/hooks/useProjects'
 import { NotFoundPage } from './NotFoundPage'
 import { FlipTitle } from '@/components/motion/FlipTitle'
+import { DUR, EASE } from '@/lib/motion-tokens'
 
 export function ProjectPage() {
   const { slug = '' } = useParams()
@@ -40,9 +41,25 @@ export function ProjectPage() {
         <p className="mt-6 max-w-2xl text-lead text-muted">{project.summary}</p>
         <motion.div
           layoutId={`project-cover-${project.slug}`}
-          className="mt-10 h-40 overflow-hidden rounded-card border border-border bg-[radial-gradient(120%_120%_at_0%_0%,var(--color-surface-2),var(--color-bg))] sm:h-56"
+          className="relative mt-10 h-40 overflow-hidden rounded-card border border-border bg-[radial-gradient(120%_120%_at_0%_0%,var(--color-surface-2),var(--color-bg))] sm:h-56"
           aria-hidden
-        />
+        >
+          {/* Zoom-out: the big initial settles into place; a red curtain wipes off once it lands. */}
+          <motion.span
+            className="slant absolute inset-0 grid place-items-center font-display text-[9rem] leading-none text-accent/30"
+            initial={{ scale: 1.35, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: DUR.cinematic, ease: EASE.out, delay: 0.15 }}
+          >
+            {project.title.charAt(0)}
+          </motion.span>
+          <motion.span
+            className="absolute inset-0 origin-right bg-accent"
+            initial={{ scaleX: 1 }}
+            animate={{ scaleX: 0 }}
+            transition={{ duration: DUR.cinematic, ease: EASE.inOut, delay: 0.25 }}
+          />
+        </motion.div>
 
         <div className="mt-8 flex flex-wrap gap-3">
           {!isTodo(links.live) && (

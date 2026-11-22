@@ -10,7 +10,7 @@ import { mailtoHref, validateContact, type ContactDraft } from '@/lib/contact'
 import { cn } from '@/lib/utils'
 
 const fieldClass =
-  'w-full rounded-xl border border-border bg-surface-2 px-4 py-3 text-fg placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none'
+  'w-full rounded-xl border border-border bg-surface-2 px-4 py-3 text-fg placeholder:text-muted/70 transition-[border-color,box-shadow,background-color] duration-300 ease-out-expo hover:border-muted/60 focus:border-accent focus:bg-surface focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--color-accent)_22%,transparent)] focus:outline-none'
 
 export function Contact() {
   const empty: ContactDraft = { name: '', email: '', message: '' }

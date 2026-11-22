@@ -4,6 +4,7 @@ import { useLocation, useOutlet } from 'react-router'
 import { ChatWidget } from '@/components/chat/ChatWidget'
 import { CommandPaletteHost } from '@/components/CommandPaletteHost'
 import { CustomCursor } from '@/components/motion/CustomCursor'
+import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { ScrollTrigger } from '@/lib/motion'
 import { useLenis } from '@/providers/lenis-context'
 import { PageTransition } from './PageTransition'
@@ -51,6 +52,7 @@ export function RootLayout() {
       >
         Skip to content
       </a>
+      <ScrollProgress />
       <SiteHeader />
       <main id="main" tabIndex={-1} className="outline-none">
         <LayoutGroup>

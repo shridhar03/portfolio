@@ -105,7 +105,8 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - 3D: `LazyHeroScene` imports three.js only after idle, on ≥768px screens with WebGL2 and motion allowed. Keep it in its own chunk.
 - Custom cursor + `<Magnetic>` only with a fine pointer (`hasFinePointer()`). Add `data-cursor="grow"` to non-link elements that should grow the ring.
 - Route transitions: `AnimatePresence mode="wait"` in `RootLayout`, keyed by pathname, with a frozen outlet. Project title/cover share `layoutId`s between card and case study.
-- Animate only `transform` and `opacity` (clip-path on the hero photo reveal is the one exception, a one-off on load).
+- Animate only `transform` and `opacity`. Exceptions, all one-off: clip-path for the About iris reveal, and a
+  short blur-to-sharp filter on the hero copy (cleared afterwards). Never scrub a filter or clip-path.
 
 ## API (Phase 4)
 
@@ -178,6 +179,29 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
   (`ProjectCard`) with a red wash on hover; **Manifesto** is a full-bleed red band quoting `profile.motto`;
   **Contact** ("Let's build it together.") has the particle sphere (`LazyHeroScene`, desktop only).
 - The hand-drawn layer (HandMark/HandNote) is no longer used on the home page; the components remain.
+
+## Motion system + polish pass (v3.1)
+
+- **Tokens:** `lib/motion-tokens.ts` (re-exported by `lib/motion.ts`) is the single source for timing:
+  `DUR` (micro .18 / ui .32 / reveal .75 / cinematic 1.1 s), `EASE` (Motion beziers) + `GSAP_EASE`,
+  `SPRING` (snappy / soft / follow / magnetic / pop), `DIST`, `STAGGER`, `BLUR`, `SCRUB`. New animation code
+  uses these, never ad-hoc numbers. It imports no library, so Motion-only components stay GSAP-free.
+- **Hero:** cinematic timeline (stage → giant name → portrait → letter flip → blur-to-sharp copy), layers
+  tagged `data-depth` move at different rates on scroll-out (half on phones), breathing glow (`animate-breathe`,
+  CSS), `<Spotlight>` (pointer light, mouse only), and a decorative scroll cue (`[data-scroll-cue]`,
+  aria-hidden, tabIndex -1). The blur on hero copy is a one-off filter that is cleared afterwards.
+- **New scroll attributes** (useScrollAnimations): `[data-parallax="0.2"]` (decorative depth), `[data-iris]`
+  (circle clip-path reveal, once; About figure), `[data-drift]` (big type sliding sideways; Manifesto).
+  Image reveals are deliberately varied: hero rise, About iris, project cover tilt/zoom, case-study cover
+  zoom-out + red curtain (ProjectPage, Motion).
+- **Header** (`hooks/useHeaderScroll.ts`): hides while scrolling down past 160px, returns on scroll up or
+  focus; glass deepens once scrolled; active-section pill (`layoutId="nav-active"`, IntersectionObserver) with
+  `aria-current`; hover underline; mobile menu animates in with staggered links and a bars→X icon. The full
+  nav shows from `lg` (1024px); below that the menu button is used (the pill overflowed at 768px).
+- **Cursor labels:** any element with `data-cursor-label="…"` turns the custom cursor into a red pill with
+  that text (project rows say "View project"). `ScrollProgress` is the 2px red bar at the very top.
+- **Micro-interactions:** Button lifts 2px with a soft accent shadow and presses down on click; project row
+  arrow swaps out diagonally; contact fields get a red focus ring; footer signature rises in on view.
 
 ## Conventions
 

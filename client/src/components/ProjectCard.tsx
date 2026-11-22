@@ -1,14 +1,34 @@
 import { ArrowUpRight } from 'lucide-react'
-import { motion } from 'motion/react'
-import { useRef } from 'react'
+import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
+import { useRef, type PointerEvent } from 'react'
 import { Link } from 'react-router'
 import { getProject, type Project } from '@/content/projects'
 import { useCanPlayVideo } from '@/hooks/useCanPlayVideo'
+import { SPRING } from '@/lib/motion-tokens'
 
 const statusLabel: Record<Project['status'], string> = {
   shipped: 'Shipped',
   'in-progress': 'In progress',
   'coming-soon': 'Coming soon',
+}
+
+/** Subtle 3D tilt toward the pointer (max a few degrees). Mouse only; MotionConfig handles reduced motion. */
+function useTilt(max = 6) {
+  const px = useMotionValue(0.5)
+  const py = useMotionValue(0.5)
+  const rotateX = useSpring(useTransform(py, [0, 1], [max, -max]), SPRING.follow)
+  const rotateY = useSpring(useTransform(px, [0, 1], [-max, max]), SPRING.follow)
+  const onPointerMove = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'mouse') return
+    const r = e.currentTarget.getBoundingClientRect()
+    px.set((e.clientX - r.left) / r.width)
+    py.set((e.clientY - r.top) / r.height)
+  }
+  const reset = () => {
+    px.set(0.5)
+    py.set(0.5)
+  }
+  return { style: { rotateX, rotateY, transformPerspective: 900 }, onPointerMove, reset }
 }
 
 /**
@@ -18,6 +38,7 @@ const statusLabel: Record<Project['status'], string> = {
  */
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
   const num = String(index + 1).padStart(2, '0')
+  const tilt = useTilt()
   const video = useRef<HTMLVideoElement>(null)
   const canPlay = useCanPlayVideo()
   // API data may lag the bundled JSON; the demo path comes from the bundle.
@@ -45,10 +66,14 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
   return (
     <article
       onPointerEnter={demo ? play : undefined}
-      onPointerLeave={demo ? (e) => e.pointerType === 'mouse' && stop() : undefined}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={(e) => {
+        tilt.reset()
+        if (demo && e.pointerType === 'mouse') stop()
+      }}
       onFocus={demo ? play : undefined}
       onBlur={demo ? stop : undefined}
-      data-cursor="grow"
+      data-cursor-label="View project"
       className="group relative isolate grid items-center gap-5 border-t border-border py-8 sm:grid-cols-[4rem_minmax(0,1fr)] lg:grid-cols-[4rem_minmax(0,1fr)_16rem] lg:gap-8"
     >
       <span
@@ -90,10 +115,13 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
       </div>
 
       {/* Cover: placeholder art until real screenshots exist; plays the demo clip on hover. */}
-      <div className="relative hidden lg:block">
+      <motion.div
+        className="relative hidden transition-[translate] duration-500 ease-out-expo group-focus-within:-translate-y-1.5 group-hover:-translate-y-1.5 lg:block"
+        style={tilt.style}
+      >
         <motion.div
           layoutId={`project-cover-${project.slug}`}
-          className="relative aspect-[4/3] overflow-hidden rounded-card border border-border bg-surface"
+          className="relative aspect-[4/3] overflow-hidden rounded-card border border-border bg-surface shadow-[0_24px_60px_-30px_rgb(0_0_0/0.7)] transition-[border-color] duration-500 group-hover:border-accent/60"
           aria-hidden
         >
           <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_0%_0%,var(--color-surface-2),var(--color-bg))] transition-transform duration-700 ease-out-expo group-hover:scale-110">
@@ -115,12 +143,14 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           )}
         </motion.div>
         <span
-          className="absolute -top-3 -right-3 grid size-11 place-items-center rounded-full bg-accent text-accent-ink transition-transform duration-300 group-hover:rotate-45"
+          className="absolute -top-3 -right-3 grid size-11 place-items-center overflow-hidden rounded-full bg-accent text-accent-ink"
           aria-hidden
         >
-          <ArrowUpRight className="size-5" />
+          {/* Arrow exits top-right while a second one slides in from bottom-left */}
+          <ArrowUpRight className="size-5 transition-transform duration-500 ease-out-expo group-focus-within:translate-x-6 group-focus-within:-translate-y-6 group-hover:translate-x-6 group-hover:-translate-y-6" />
+          <ArrowUpRight className="absolute size-5 -translate-x-6 translate-y-6 transition-transform duration-500 ease-out-expo group-focus-within:translate-x-0 group-focus-within:translate-y-0 group-hover:translate-x-0 group-hover:translate-y-0" />
         </span>
-      </div>
+      </motion.div>
     </article>
   )
 }

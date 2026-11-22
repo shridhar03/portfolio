@@ -194,6 +194,32 @@
       opacity: 0;
     }
   }
+  /* v3 polish: ambient hero glow and the scroll cue dot */
+  --animate-breathe: breathe 9s ease-in-out infinite alternate;
+  --animate-scroll-cue: scroll-cue 1.8s cubic-bezier(0.83, 0, 0.17, 1) infinite;
+  @keyframes breathe {
+    from {
+      transform: scale(0.94);
+      opacity: 0.5;
+    }
+    to {
+      transform: scale(1.06);
+      opacity: 0.68;
+    }
+  }
+  @keyframes scroll-cue {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(14px);
+      opacity: 0;
+    }
+  }
 }
 
 /* Custom cursor replaces the native one only where it is enabled (fine pointer, motion OK). */

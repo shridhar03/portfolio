@@ -15,6 +15,7 @@ function HillsToStage() {
   return (
     <figure
       data-scrub
+      data-iris
       className="relative self-start overflow-hidden rounded-card border border-border bg-surface lg:col-span-5"
     >
       {clip && canPlay ? (

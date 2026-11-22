@@ -1,7 +1,18 @@
 import type { RefObject } from 'react'
 import { useIsoLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect'
 import { onIdle } from '@/lib/idle'
-import { DESKTOP, gsap, MOTION_OK, ScrollTrigger } from '@/lib/motion'
+import {
+  DESKTOP,
+  DIST,
+  DUR,
+  GSAP_EASE,
+  gsap,
+  MOBILE,
+  MOTION_OK,
+  SCRUB,
+  STAGGER,
+  ScrollTrigger,
+} from '@/lib/motion'
 
 /**
  * Page-wide scroll choreography, scoped to `root`. Markup opts in with data attributes:
@@ -14,6 +25,10 @@ import { DESKTOP, gsap, MOTION_OK, ScrollTrigger } from '@/lib/motion'
  *  - [data-draw="scroll"]    hand-drawn SVG mark that draws its strokes when it enters
  *  - [data-odometer]         digits ([data-odo-digit]) roll up from 0 to their value
  *  - [data-scrub]            About story: a video scrubbed by scroll, or the stage still sliding up
+ *  - [data-parallax="0.2"]   decorative layer drifting at its own depth (half strength on phones)
+ *  - [data-iris]             image revealed by a circle opening from its centre (one-off clip-path)
+ *  - [data-drift]            a big line of type sliding sideways as it crosses the viewport
+ * Timings, easings and distances come from lib/motion-tokens.ts.
  * Nothing is hidden unless motion is allowed, so content is always readable without JS.
  * Setup waits for an idle moment (everything it touches starts below the fold), which keeps
  * ScrollTrigger's layout reads off the critical path. With a #hash in the URL it runs at once.
@@ -35,13 +50,13 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
           onEnter: (els) =>
             gsap.fromTo(
               els,
-              { y: 40, autoAlpha: 0 },
+              { y: DIST.md, autoAlpha: 0 },
               {
                 y: 0,
                 autoAlpha: 1,
-                duration: 0.9,
-                ease: 'expo.out',
-                stagger: 0.08,
+                duration: DUR.reveal,
+                ease: GSAP_EASE.out,
+                stagger: STAGGER.base,
                 overwrite: true,
               },
             ),
@@ -51,11 +66,11 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
       step(MOTION_OK, () => {
         gsap.utils.toArray<HTMLElement>('[data-reveal-stagger]').forEach((group) => {
           gsap.from(group.children, {
-            y: 48,
+            y: DIST.lg,
             autoAlpha: 0,
-            duration: 0.9,
-            ease: 'expo.out',
-            stagger: 0.07,
+            duration: DUR.reveal,
+            ease: GSAP_EASE.out,
+            stagger: STAGGER.base,
             scrollTrigger: { trigger: group, start: 'top 85%', once: true },
           })
         })
@@ -68,8 +83,8 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
             {
               rotateX: 0,
               y: 0,
-              ease: 'none',
-              scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 62%', scrub: 0.6 },
+              ease: GSAP_EASE.scrub,
+              scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 62%', scrub: SCRUB },
             },
           )
         })
@@ -155,6 +170,53 @@ export function useScrollAnimations(root: RefObject<HTMLElement | null>, deps: u
               },
             })
           })
+        })
+      }),
+      step(MOTION_OK, () => {
+        // Depth: decorative layers drift at their own speed. Phones get half the travel.
+        const mobile = window.matchMedia(MOBILE).matches
+        gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
+          const depth = Number(el.dataset.parallax) * (mobile ? 0.5 : 1)
+          gsap.fromTo(
+            el,
+            { yPercent: -depth * 50 },
+            {
+              yPercent: depth * 50,
+              ease: GSAP_EASE.scrub,
+              scrollTrigger: {
+                trigger: el.parentElement,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true,
+              },
+            },
+          )
+        })
+        // Iris: a circle opens from the centre of the image (clip-path, once).
+        gsap.utils.toArray<HTMLElement>('[data-iris]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { clipPath: 'circle(12% at 50% 45%)' },
+            {
+              clipPath: 'circle(75% at 50% 45%)',
+              duration: DUR.cinematic,
+              ease: GSAP_EASE.inOut,
+              clearProps: 'clipPath',
+              scrollTrigger: { trigger: el, start: 'top 80%', once: true },
+            },
+          )
+        })
+        // Kinetic type: the line slides sideways while it crosses the screen (always readable).
+        gsap.utils.toArray<HTMLElement>('[data-drift]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { xPercent: 4 },
+            {
+              xPercent: -4,
+              ease: GSAP_EASE.scrub,
+              scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: SCRUB },
+            },
+          )
         })
       }),
       step(`${MOTION_OK} and ${DESKTOP}`, () => {

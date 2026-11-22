@@ -1,3 +1,4 @@
+import { Spotlight } from '@/components/motion/Spotlight'
 import { ProjectCard } from '@/components/ProjectCard'
 import { useProjects } from '@/hooks/useProjects'
 
@@ -7,8 +8,9 @@ export function Projects() {
     <section
       id="projects"
       aria-labelledby="projects-title"
-      className="relative scroll-mt-20 py-section"
+      className="relative isolate scroll-mt-20 overflow-hidden py-section"
     >
+      <Spotlight className="-z-10" size={720} />
       <div className="mx-auto max-w-content px-4 sm:px-6">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">

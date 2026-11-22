@@ -1,7 +1,7 @@
 import { motion, useMotionValue, useSpring } from 'motion/react'
 import { useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { useHydrated } from '@/hooks/useHydrated'
-import { hasFinePointer, prefersReducedMotion } from '@/lib/motion'
+import { hasFinePointer, prefersReducedMotion, SPRING } from '@/lib/motion'
 
 /** Pulls its child toward the pointer while hovered. Inert on touch / reduced motion. */
 export function Magnetic({
@@ -14,8 +14,8 @@ export function Magnetic({
   const ref = useRef<HTMLDivElement>(null)
   const [canPull] = useState(() => hasFinePointer() && !prefersReducedMotion())
   const enabled = useHydrated() && canPull
-  const x = useSpring(useMotionValue(0), { stiffness: 200, damping: 15, mass: 0.3 })
-  const y = useSpring(useMotionValue(0), { stiffness: 200, damping: 15, mass: 0.3 })
+  const x = useSpring(useMotionValue(0), SPRING.magnetic)
+  const y = useSpring(useMotionValue(0), SPRING.magnetic)
 
   const onMove = (e: PointerEvent) => {
     const r = ref.current?.getBoundingClientRect()
