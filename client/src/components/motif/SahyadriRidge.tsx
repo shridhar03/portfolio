@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 /**
  * The repeating Sahyadri motif: two ridges of flat-topped Deccan plateaus with steep scarps, one
- * crest picked out in turmeric. Decorative. Stretches to its container's width.
+ * crest picked out in the accent colour. Decorative. Stretches to its container's width.
  */
 export function SahyadriRidge({
   className,

@@ -5,39 +5,41 @@
 
 :root,
 [data-theme='dark'] {
-  /* Monsoon Sahyadri: deep forest green of the hills in the rains */
-  --bg: #0a1410;
-  --surface: #11211a;
-  --surface-2: #182c23;
-  --border: #24392f;
-  --fg: #e8efe9;
-  --muted: #9db3a6;
-  /* Turmeric accent */
-  --accent: #e8a33a;
-  --accent-ink: #1a1100; /* text on an accent fill */
-  --accent-fg: #f0b85a; /* accent used as text on bg (AA ≥ 4.5:1) */
-  --mist: #2f5a4a; /* secondary blob colour, monsoon mist */
-  --ridge-far: #162b22; /* Sahyadri motif, back ridge */
-  --ridge-near: #0f1e18; /* Sahyadri motif, front ridge */
-  --grain-opacity: 0.07;
-  --blob-opacity: 0.35;
+  /* Ember (v3): near-black stage with a signal-red accent, from the owner's reference video */
+  --bg: #09090a;
+  --surface: #141416;
+  --surface-2: #1d1d20;
+  --border: #2b2b30;
+  --fg: #f5f2ef;
+  --muted: #a9a4a0;
+  /* Signal red */
+  --accent: #d92b20;
+  --accent-ink: #ffffff; /* text on an accent fill */
+  --accent-fg: #ff6a5c; /* accent used as text on bg (AA ≥ 4.5:1) */
+  --mist: #6b120c; /* secondary glow, deep ember */
+  --ridge-far: #1a0d0c; /* Sahyadri motif, back ridge */
+  --ridge-near: #110909; /* Sahyadri motif, front ridge */
+  --grid: rgb(217 43 32 / 0.55); /* hero perspective floor */
+  --grain-opacity: 0.08;
+  --blob-opacity: 0.4;
 }
 
 [data-theme='light'] {
-  --bg: #f3f1e7;
-  --surface: #fffdf6;
-  --surface-2: #ebe6d6;
-  --border: #d6cfbb;
-  --fg: #0f1d17;
-  --muted: #475a50;
-  --accent: #d98f1f;
-  --accent-ink: #1a1100;
-  --accent-fg: #8a4b00; /* AA on light bg */
-  --mist: #b9d3c4;
-  --ridge-far: #dfe3d3;
-  --ridge-near: #cfd6c3;
+  --bg: #f4f1ec;
+  --surface: #ffffff;
+  --surface-2: #ebe6df;
+  --border: #d9d1c6;
+  --fg: #141212;
+  --muted: #57514c;
+  --accent: #c81f17;
+  --accent-ink: #ffffff;
+  --accent-fg: #b3170f; /* AA on light bg */
+  --mist: #f2b8ae;
+  --ridge-far: #e6ddd3;
+  --ridge-near: #dcd1c4;
+  --grid: rgb(200 31 23 / 0.35);
   --grain-opacity: 0.05;
-  --blob-opacity: 0.45;
+  --blob-opacity: 0.4;
 }
 
 @theme inline {
@@ -53,10 +55,13 @@
   --color-mist: var(--mist);
   --color-ridge-far: var(--ridge-far);
   --color-ridge-near: var(--ridge-near);
+  --color-grid: var(--grid);
 }
 
 @theme {
-  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Anton', 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  /* Card titles and UI headings that read better un-condensed */
+  --font-heading: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
   /* Handwritten notes (hand-drawn layer) and the Marathi place name */
@@ -67,11 +72,13 @@
   --text-body: clamp(1rem, 0.96rem + 0.19vw, 1.125rem);
   --text-lead: clamp(1.125rem, 1.05rem + 0.38vw, 1.375rem);
   --text-h3: clamp(1.375rem, 1.24rem + 0.56vw, 1.75rem);
-  --text-h2: clamp(2rem, 1.6rem + 1.69vw, 3.25rem);
+  --text-h2: clamp(2.75rem, 2rem + 3.2vw, 5.25rem);
   --text-h1: clamp(2.75rem, 1.9rem + 3.75vw, 5.5rem);
   --text-display: clamp(3.25rem, 1.8rem + 6.2vw, 8rem);
+  /* The giant name behind the hero portrait */
+  --text-mega: clamp(6rem, 1rem + 19vw, 19rem);
 
-  --radius-card: 1.25rem;
+  --radius-card: 0.875rem;
   --radius-pill: 9999px;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

@@ -19,7 +19,15 @@ function Score({ score }: { score: string }) {
 
 export function Education() {
   return (
-    <Section id="education" eyebrow="05 · Education" title="Economics first, then code">
+    <Section
+      id="education"
+      eyebrow="05 · Education"
+      title={
+        <>
+          Economics first, <span className="text-accent-fg">then code.</span>
+        </>
+      }
+    >
       <ol className="relative ml-3 sm:ml-[9.5rem]" data-timeline>
         {/* Track + accent line that draws itself on scroll */}
         <span className="absolute top-0 bottom-0 -left-px w-0.5 bg-border" aria-hidden />

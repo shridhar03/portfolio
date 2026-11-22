@@ -23,7 +23,7 @@ export function Section({ id, eyebrow, title, intro, children, className, ...res
           {eyebrow}
         </p>
         {/* 3D: the heading starts tilted back and stands upright as it scrolls in ([data-tilt]). */}
-        <h2 id={`${id}-title`} className="mt-3 text-h2 font-bold" data-tilt>
+        <h2 id={`${id}-title`} className="slant mt-3 text-h2" data-tilt>
           {title}
         </h2>
         {intro && (

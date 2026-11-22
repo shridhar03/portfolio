@@ -6,7 +6,11 @@ export function Experience() {
     <Section
       id="experience"
       eyebrow="03 · Experience"
-      title="Where I've worked"
+      title={
+        <>
+          Where I&apos;ve <span className="text-accent-fg">worked.</span>
+        </>
+      }
       data-pin="experience"
       className="lg:flex lg:min-h-dvh lg:flex-col lg:justify-center"
     >

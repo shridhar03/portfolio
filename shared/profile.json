@@ -137,7 +137,23 @@
         "label": "UGC NET",
         "value": "Qualified in January 2025"
       }
-    ]
+    ],
+    "highlights": [
+      {
+        "value": "8.74",
+        "label": "MCA GPA, out of 10"
+      },
+      {
+        "value": "4",
+        "label": "Cloud, ML and web certifications"
+      },
+      {
+        "value": "2025",
+        "label": "UGC NET qualified, January"
+      }
+    ],
+    "now": "Building with the MERN stack and going deeper into AI/ML and NLP.",
+    "motto": "I like software that is quick and easy to use."
   },
   "skillGroups": [
     {

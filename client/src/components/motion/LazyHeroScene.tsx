@@ -1,12 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTheme } from '@/providers/theme-context'
 import { onIdle } from '@/lib/idle'
+import { cn } from '@/lib/utils'
 import { prefersReducedMotion } from '@/lib/motion'
 
 const HeroScene = lazy(() => import('./HeroScene'))
 
-/** Loads three.js only after the page is idle, only on wide screens with motion allowed and WebGL. */
-export function LazyHeroScene() {
+/** The glowing particle sphere (used beside Contact). Loads three.js only after the page is idle, only on wide screens with motion allowed and WebGL. */
+export function LazyHeroScene({ className }: { className?: string }) {
   const { theme } = useTheme()
   const [ready, setReady] = useState(false)
 
@@ -19,11 +20,14 @@ export function LazyHeroScene() {
   if (!ready) return null
   return (
     <div
-      className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full animate-[fade-in_1.2s_ease-out] opacity-70 lg:w-[58%]"
+      className={cn(
+        'pointer-events-none absolute -z-10 animate-[fade-in_1.2s_ease-out] opacity-80',
+        className ?? 'inset-y-0 right-0 w-full lg:w-[58%]',
+      )}
       aria-hidden
     >
       <Suspense fallback={null}>
-        <HeroScene color={theme === 'dark' ? '#e8a33a' : '#a86500'} />
+        <HeroScene color={theme === 'dark' ? '#ff4b3a' : '#c81f17'} />
       </Suspense>
     </div>
   )

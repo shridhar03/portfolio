@@ -1,7 +1,7 @@
 import type { ImgHTMLAttributes } from 'react'
 
 type Props = {
-  name: 'profile' | 'speaking'
+  name: 'profile' | 'speaking' | 'cutout'
   widths: number[]
   sizes: string
   alt: string
@@ -9,6 +9,9 @@ type Props = {
   height: number
   priority?: boolean
 } & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'srcSet' | 'width' | 'height'>
+
+// Transparent images (the hero cutout) fall back to PNG instead of JPEG.
+const fallback = (name: Props['name']) => (name === 'cutout' ? 'png' : 'jpg')
 
 const set = (name: string, widths: number[], ext: string) =>
   widths.map((w) => `/img/${name}-${w}.${ext} ${w}w`).join(', ')
@@ -20,8 +23,8 @@ export function Picture({ name, widths, sizes, alt, width, height, priority, ...
       <source type="image/avif" srcSet={set(name, widths, 'avif')} sizes={sizes} />
       <source type="image/webp" srcSet={set(name, widths, 'webp')} sizes={sizes} />
       <img
-        src={`/img/${name}-${widths.at(-1)}.jpg`}
-        srcSet={set(name, widths, 'jpg')}
+        src={`/img/${name}-${widths.at(-1)}.${fallback(name)}`}
+        srcSet={set(name, widths, fallback(name))}
         sizes={sizes}
         alt={alt}
         width={width}

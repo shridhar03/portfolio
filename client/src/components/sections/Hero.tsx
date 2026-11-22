@@ -1,11 +1,9 @@
 import { ArrowDownRight, FileDown, MessageCircle } from 'lucide-react'
 import { useRef } from 'react'
 import { AmbientVideo } from '@/components/media/AmbientVideo'
-import { HandMark } from '@/components/motif/HandMark'
-import { HandNote } from '@/components/motif/HandNote'
 import { SahyadriRidge } from '@/components/motif/SahyadriRidge'
-import { LazyHeroScene } from '@/components/motion/LazyHeroScene'
 import { Magnetic } from '@/components/motion/Magnetic'
+import { Odometer } from '@/components/motion/Odometer'
 import { RoleRotator } from '@/components/motion/RoleRotator'
 import { Picture } from '@/components/Picture'
 import { Button } from '@/components/ui/button'
@@ -16,6 +14,8 @@ import { gsap, MOTION_OK, SplitText } from '@/lib/motion'
 import { useChat } from '@/providers/chat-context'
 import { useIntro } from '@/providers/intro-context'
 
+const MEGA = 'SHRIDHAR'
+
 export function Hero() {
   const root = useRef<HTMLElement>(null)
   const { introDone } = useIntro()
@@ -24,40 +24,37 @@ export function Hero() {
   useIsoLayoutEffect(() => {
     const mm = gsap.matchMedia(root)
     mm.add(MOTION_OK, () => {
-      // Hide the copy until the preloader finishes, then reveal. The portrait stays painted
-      // underneath a curtain, so it is the LCP element from the very first frame.
+      // Hide the copy until the preloader finishes, then reveal. The portrait is never hidden,
+      // only moved, so it is the LCP element from the very first frame.
       if (!introDone) {
         gsap.set('[data-hero]', { autoAlpha: 0 })
-        gsap.set('[data-hero-curtain]', { scaleY: 1 })
         return
       }
-      // 3D letter flip: each letter turns up from lying flat (rotateX -100°) on its baseline.
+      // 3D letter flip on the name: each letter turns up from lying flat on its baseline.
       const split = SplitText.create('#hero-title', { type: 'words,chars' })
       const tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
       tl.set('[data-hero]', { autoAlpha: 1 })
-        .from(split.chars, {
-          rotateX: -100,
-          yPercent: 20,
-          autoAlpha: 0,
-          transformOrigin: '50% 90%',
-          duration: 1.1,
-          stagger: 0.045,
-        })
-        .from('[data-hero-fade]', { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.08 }, 0.3)
-        .fromTo('[data-hero-curtain]', { scaleY: 1 }, { scaleY: 0, duration: 1.1 }, 0.1)
-        .from('[data-hero-photo] img', { scale: 1.08, duration: 1.3 }, 0.1)
-        .fromTo(
-          '[data-draw="hero"] path',
-          { strokeDashoffset: 1 },
-          { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut', stagger: 0.15 },
-          0.9,
+        // The giant name rises letter by letter out of its own baseline (clipped by the row).
+        .from('[data-mega-char]', { yPercent: 105, duration: 1.3, stagger: 0.05 }, 0)
+        .from('[data-hero-photo]', { yPercent: 7, scale: 0.94, duration: 1.5 }, 0.05)
+        .from('[data-hero-floor]', { autoAlpha: 0, yPercent: 20, duration: 1.4 }, 0)
+        .from(
+          split.chars,
+          {
+            rotateX: -100,
+            yPercent: 20,
+            autoAlpha: 0,
+            transformOrigin: '50% 90%',
+            duration: 1.1,
+            stagger: 0.04,
+          },
+          0.3,
         )
-      // Subtle parallax on the portrait while scrolling out of the hero.
-      gsap.to('[data-hero-photo] img', {
-        yPercent: 8,
-        ease: 'none',
-        scrollTrigger: { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true },
-      })
+        .from('[data-hero-fade]', { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.07 }, 0.5)
+      // Depth while scrolling out: the name sinks slower than the portrait.
+      const st = { trigger: root.current, start: 'top top', end: 'bottom top', scrub: true }
+      gsap.to('[data-mega]', { yPercent: 30, ease: 'none', scrollTrigger: st })
+      gsap.to('[data-hero-photo]', { yPercent: -6, ease: 'none', scrollTrigger: { ...st } })
       return () => split.revert()
     })
     return () => mm.revert()
@@ -65,56 +62,58 @@ export function Hero() {
 
   return (
     <section ref={root} aria-labelledby="hero-title" className="relative isolate overflow-hidden">
-      {/* Video 1: looping background made in Canva. Still or nothing until a clip is added. */}
-      <AmbientVideo clip={media.heroLoop} className="absolute inset-0 -z-20 size-full opacity-25" />
-      {media.heroLoop && (
-        <div
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-bg via-bg/85 to-bg/40"
-          aria-hidden
-        />
-      )}
-      <LazyHeroScene />
-      <div className="blob -top-40 -left-32 -z-10 size-[30rem]" aria-hidden />
+      {/* Optional looping background clip. Nothing until a clip is added. */}
+      <AmbientVideo clip={media.heroLoop} className="absolute inset-0 -z-20 size-full opacity-20" />
+      {/* Stage light: a red glow behind the portrait, and a perspective floor under it. */}
       <div
-        className="blob top-1/4 -right-40 -z-10 size-[36rem] [--blob:var(--color-mist)]"
+        className="absolute top-[18%] left-1/2 -z-10 aspect-square w-[min(64rem,150vw)] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_42%,transparent),transparent)] opacity-60"
         aria-hidden
       />
+      <div className="grid-floor -z-10" data-hero-floor aria-hidden />
+      <SahyadriRidge
+        crest={false}
+        className="absolute inset-x-0 bottom-[22%] -z-10 h-20 opacity-60 sm:h-28"
+      />
 
-      <div className="mx-auto grid min-h-dvh max-w-content items-center gap-12 px-4 pt-28 pb-28 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:pt-24 lg:pb-32">
-        <div className="lg:col-span-7" data-hero>
+      {/* The giant name behind the cut-out portrait. Decorative: the h1 carries the name. */}
+      <p
+        data-mega
+        aria-hidden
+        className="pointer-events-none absolute top-[5.75rem] left-1/2 flex -translate-x-1/2 overflow-hidden font-display text-mega leading-[0.86] whitespace-nowrap select-none lg:top-[6.5rem]"
+      >
+        {[...MEGA].map((ch, i) => (
+          <span key={i} data-mega-char className="ember-text inline-block">
+            {ch}
+          </span>
+        ))}
+      </p>
+
+      <div className="relative mx-auto grid min-h-dvh max-w-content gap-8 px-4 pt-24 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)_minmax(0,1fr)] lg:items-end lg:gap-6 lg:pt-24">
+        {/* Copy */}
+        <div className="relative z-20 lg:pb-20" data-hero>
           <p className="flex items-baseline gap-3" data-hero-fade>
             <span className="eyebrow">{profile.location}</span>
             <span lang="mr" className="font-marathi text-lg text-muted">
               सातारा
             </span>
           </p>
-          <h1 id="hero-title" className="relative mt-5 text-display font-bold">
+          <h1 id="hero-title" className="mt-4 text-[clamp(3rem,2rem+4vw,5.5rem)]">
             Shridhar
             <br />
-            <span className="relative inline-block lg:pl-[0.6em]">
-              Chavan
-              <HandMark
-                kind="underline"
-                draw="hero"
-                className="absolute -bottom-[0.12em] left-0 h-[0.2em] w-full lg:left-[0.6em] lg:w-[calc(100%-0.6em)]"
-              />
-            </span>
+            Chavan<span className="text-accent">.</span>
           </h1>
-
           <p
-            className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 font-display text-h3 font-semibold text-muted"
+            className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-heading text-lg font-semibold text-muted"
             data-hero-fade
           >
             <span>I&apos;m a</span>
             <RoleRotator roles={profile.roles} />
           </p>
-
-          <p className="mt-6 max-w-xl text-lead text-muted" data-hero-fade>
+          <p className="mt-5 max-w-md text-muted" data-hero-fade>
             I studied Economics, then computers. Now I build web apps with MongoDB, Express, React
             and Node, and I&apos;m teaching them to read language with AI/ML and NLP.
           </p>
-
-          <div className="mt-9 flex flex-wrap gap-3" data-hero-fade>
+          <div className="mt-7 flex flex-wrap gap-3" data-hero-fade>
             <Magnetic>
               <Button asChild size="lg">
                 <a href="#projects">
@@ -129,44 +128,59 @@ export function Hero() {
                 </a>
               </Button>
             </Magnetic>
-            <Button size="lg" variant="ghost" onClick={() => chat.setOpen(true)}>
-              <MessageCircle aria-hidden /> Ask Shridhar
-            </Button>
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-sm lg:col-span-5 lg:max-w-none">
-          <div
-            data-hero-photo
-            className="relative overflow-hidden rounded-t-[999px] rounded-b-card border border-border bg-surface shadow-2xl shadow-black/30"
-          >
+        {/* Stage: the cut-out portrait (first on phones, centre column on desktop) */}
+        <div className="relative z-10 order-first mx-auto w-full max-w-[16rem] sm:max-w-[20rem] lg:order-none lg:max-w-none">
+          <div data-hero-photo className="relative">
             <Picture
-              name="profile"
-              widths={[360, 540, 720]}
-              sizes="(min-width: 1024px) 34vw, (min-width: 640px) 384px, 90vw"
-              width={720}
-              height={900}
+              name="cutout"
+              widths={[320, 480, 645]}
+              sizes="(min-width: 1024px) 25rem, (min-width: 640px) 20rem, 16rem"
+              width={645}
+              height={1010}
               priority
-              alt="Shridhar Chavan smiling on a hilltop above green valleys and a lake, wearing a navy jacket"
-              className="aspect-[4/5] w-full object-cover"
+              alt="Shridhar Chavan smiling, hands in the pockets of a navy jacket"
+              className="h-auto w-full [mask-image:linear-gradient(to_bottom,black_72%,transparent)]"
             />
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-bg/80 to-transparent"
-              aria-hidden
-            />
-            <div
-              data-hero-curtain
-              className="pointer-events-none absolute inset-0 origin-top bg-surface"
-              aria-hidden
-            />
-          </div>
-          <div className="absolute -right-2 -bottom-10 sm:-right-6" data-hero aria-hidden>
-            <HandMark kind="circle" draw="hero" className="absolute -inset-x-4 -inset-y-3" />
-            <HandNote className="relative px-3 py-2">me, up in the hills</HandNote>
           </div>
         </div>
+
+        {/* Now + highlights */}
+        <div className="relative z-20 pb-16 lg:pb-20" data-hero>
+          <div className="panel p-5" data-hero-fade>
+            <p className="flex items-center gap-2 font-mono text-xs tracking-[0.2em] text-muted uppercase">
+              <span className="size-2 rounded-full bg-accent" aria-hidden />
+              Right now
+            </p>
+            <p className="mt-2 font-heading text-lg leading-snug font-semibold">{profile.now}</p>
+            <button
+              type="button"
+              onClick={() => chat.setOpen(true)}
+              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-fg underline-offset-4 hover:underline"
+            >
+              <MessageCircle className="size-4" aria-hidden /> Ask Shridhar anything
+            </button>
+          </div>
+          <dl className="mt-3 grid grid-cols-3 gap-3" data-hero-fade>
+            {profile.highlights.map((h) => (
+              <div
+                key={h.label}
+                className="panel flex flex-col-reverse justify-end gap-2 p-3 sm:p-4"
+              >
+                <dt className="text-xs leading-snug text-muted">{h.label}</dt>
+                <dd>
+                  <Odometer
+                    value={h.value}
+                    className="font-display text-[clamp(1.75rem,1.4rem+1vw,2.5rem)]"
+                  />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </div>
-      <SahyadriRidge className="absolute inset-x-0 bottom-0 -z-10" />
     </section>
   )
 }

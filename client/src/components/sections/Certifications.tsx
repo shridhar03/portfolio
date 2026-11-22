@@ -7,7 +7,11 @@ export function Certifications() {
     <Section
       id="certifications"
       eyebrow="06 · Certifications"
-      title="Certified"
+      title={
+        <>
+          <span className="text-accent-fg">Certified.</span>
+        </>
+      }
       data-hscroll
       className="overflow-x-clip"
     >

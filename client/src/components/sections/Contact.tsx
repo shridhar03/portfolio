@@ -1,6 +1,7 @@
 import { ArrowUpRight, CheckCircle2, Loader2, Mail, Send } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState, type FormEvent } from 'react'
+import { LazyHeroScene } from '@/components/motion/LazyHeroScene'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { Button } from '@/components/ui/button'
 import { profile } from '@/content/profile'
@@ -90,11 +91,18 @@ export function Contact() {
       className="relative isolate scroll-mt-20 overflow-hidden py-section"
     >
       <div className="blob -bottom-40 left-1/3 -z-10 size-[32rem]" aria-hidden />
+      <LazyHeroScene className="top-1/2 left-[8%] size-[34rem] -translate-y-1/2" />
       <div className="mx-auto grid max-w-content gap-12 px-4 sm:px-6 lg:grid-cols-12">
         <div className="lg:col-span-6" data-reveal>
           <p className="eyebrow">08 · Contact</p>
-          <h2 id="contact-title" className="mt-3 text-h1 font-bold" data-tilt>
-            Write to <span className="text-accent-fg">me</span>
+          <h2
+            id="contact-title"
+            className="slant mt-3 text-[clamp(3rem,2rem+4.6vw,6.5rem)]"
+            data-tilt
+          >
+            Let&apos;s build
+            <br />
+            <span className="text-accent-fg">it together.</span>
           </h2>
           <p className="mt-5 max-w-md text-lead text-muted">
             A job, freelance work, or a question about something on this page: send it here, or

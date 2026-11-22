@@ -1,4 +1,3 @@
-import { HandMark } from '@/components/motif/HandMark'
 import { Picture } from '@/components/Picture'
 import { Section } from '@/components/Section'
 import { media } from '@/content/media'
@@ -74,7 +73,15 @@ function HillsToStage() {
 
 export function About() {
   return (
-    <Section id="about" eyebrow="01 · About" title="From the hills to the stage">
+    <Section
+      id="about"
+      eyebrow="01 · About"
+      title={
+        <>
+          From the hills <span className="text-accent-fg">to the stage.</span>
+        </>
+      }
+    >
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
         <HillsToStage />
         <div className="lg:col-span-7">
@@ -87,11 +94,8 @@ export function About() {
           </div>
           <ul className="mt-10 grid gap-3 sm:grid-cols-2" data-reveal-stagger>
             {profile.personal.map(({ label, value }) => (
-              <li
-                key={label}
-                className="flex items-start gap-4 rounded-card border border-border bg-surface p-5"
-              >
-                <HandMark kind="star" strokeWidth={2.5} className="mt-0.5 size-6 shrink-0" />
+              <li key={label} className="panel flex items-start gap-4 p-5">
+                <span className="mt-2 size-2 shrink-0 rotate-45 bg-accent" aria-hidden />
                 <span>
                   <span className="block font-mono text-xs tracking-wider text-muted uppercase">
                     {label}

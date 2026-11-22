@@ -15,7 +15,7 @@ import {
   type SimpleIcon,
 } from 'simple-icons'
 
-// Tech the resume lists. Logos are monochrome (currentColor) to stay on-palette.
+// Tech the resume lists (names come from simple-icons so the spelling is canonical).
 const tech: SimpleIcon[] = [
   siMongodb,
   siExpress,
@@ -34,32 +34,26 @@ const tech: SimpleIcon[] = [
 
 function Row({ dup }: { dup?: boolean }) {
   return (
-    <ul
-      className="flex shrink-0 items-center gap-12 pr-12"
-      data-dup={dup || undefined}
-      aria-hidden={dup}
-    >
+    <ul className="flex shrink-0 items-center" data-dup={dup || undefined} aria-hidden={dup}>
       {tech.map((t) => (
-        <li
-          key={t.slug}
-          className="flex items-center gap-3 text-muted transition-colors hover:text-fg"
-        >
-          <svg viewBox="0 0 24 24" className="size-6 fill-current" aria-hidden>
-            <path d={t.path} />
-          </svg>
-          <span className="font-display text-lg font-semibold whitespace-nowrap">{t.title}</span>
+        <li key={t.slug} className="flex items-center">
+          <span className="slant px-6 font-display text-[clamp(1.75rem,1.3rem+1.6vw,3rem)] leading-none whitespace-nowrap text-fg uppercase transition-colors hover:text-accent-fg sm:px-8">
+            {t.title}
+          </span>
+          <span className="size-2.5 rotate-45 bg-accent" aria-hidden />
         </li>
       ))}
     </ul>
   )
 }
 
-/** Infinite logo marquee (CSS transform animation). Pauses on hover/focus; static for reduced motion. */
+/** Infinite tech strip (CSS transform animation): big slanted names split by red diamonds.
+ *  Pauses on hover/focus; static for reduced motion. */
 export function TechMarquee() {
   return (
     <section
       aria-label="Technologies I work with"
-      className="marquee overflow-hidden border-y border-border py-6"
+      className="marquee relative overflow-hidden border-y border-accent/50 bg-surface py-5 sm:py-6"
     >
       <div className="marquee-track flex w-max animate-marquee">
         <Row />

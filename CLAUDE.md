@@ -52,37 +52,43 @@ so always use the semantic utilities (`bg-surface`, `text-muted`, `text-accent-f
 
 | Token      | Dark      | Light     | Use                                                             |
 | ---------- | --------- | --------- | --------------------------------------------------------------- |
-| bg         | `#0a1410` | `#f3f1e7` | page background                                                 |
-| surface    | `#11211a` | `#fffdf6` | cards                                                           |
-| surface-2  | `#182c23` | `#ebe6d6` | hover, raised, chips                                            |
-| border     | `#24392f` | `#d6cfbb` | hairlines                                                       |
-| fg         | `#e8efe9` | `#0f1d17` | body text                                                       |
-| muted      | `#9db3a6` | `#475a50` | secondary text                                                  |
-| accent     | `#e8a33a` | `#d98f1f` | fills: buttons, dots, highlights, hand-drawn marks              |
-| accent-ink | `#1a1100` | `#1a1100` | text on an accent fill                                          |
-| accent-fg  | `#f0b85a` | `#8a4b00` | accent used as **text**; passes AA on bg, surface and surface-2 |
-| mist       | `#2f5a4a` | `#b9d3c4` | secondary gradient-mesh blob                                    |
-| ridge-far  | `#162b22` | `#dfe3d3` | Sahyadri motif, back ridge                                      |
-| ridge-near | `#0f1e18` | `#cfd6c3` | Sahyadri motif, front ridge (and footer background)             |
+| bg         | `#09090a` | `#f4f1ec` | page background                                                 |
+| surface    | `#141416` | `#ffffff` | cards (`.panel`)                                                |
+| surface-2  | `#1d1d20` | `#ebe6df` | hover, raised, chips                                            |
+| border     | `#2b2b30` | `#d9d1c6` | hairlines                                                       |
+| fg         | `#f5f2ef` | `#141212` | body text                                                       |
+| muted      | `#a9a4a0` | `#57514c` | secondary text                                                  |
+| accent     | `#d92b20` | `#c81f17` | fills: buttons, dots, the red band, giant name, grid floor      |
+| accent-ink | `#ffffff` | `#ffffff` | text on an accent fill                                          |
+| accent-fg  | `#ff6a5c` | `#b3170f` | accent used as **text**; passes AA on bg, surface and surface-2 |
+| mist       | `#6b120c` | `#f2b8ae` | secondary glow blob                                             |
+| ridge-far  | `#1a0d0c` | `#e6ddd3` | Sahyadri motif, back ridge                                      |
+| ridge-near | `#110909` | `#dcd1c4` | Sahyadri motif, front ridge (and footer background)             |
+| grid       | red 55%   | red 35%   | hero perspective floor lines                                    |
 
-Measured contrast (v2): dark fg/bg 16.0:1, muted 8.4 (bg) / 7.5 (card), accent-fg 10.5 / 9.3, accent-ink
-on accent 8.7; light fg/bg 15.3, muted 6.5 / 7.2, accent-fg 6.0 / 6.7, accent-ink on accent 7.0.
+Measured contrast (v3): dark fg/bg 17.8:1, muted 8.1 (bg) / 7.5 (card), accent-fg 7.1 / 6.5, white on
+accent 4.9; light fg/bg 16.6, muted 6.9 / 7.8, accent-fg 6.1 / 6.9, white on accent 5.7.
 Re-check if you change a value; WCAG AA is a hard requirement.
 
-**Palette: "Monsoon Sahyadri"** (v2, chosen by the owner from three UI UX Pro Max proposals): the deep
-forest green of the Sahyadri hills in the rains, with a turmeric accent. It comes from the hero photo
-(the green valleys behind him) and replaces v1's midnight navy + saffron.
+**Palette: "Ember"** (v3): near-black with a signal-red accent. The owner asked for this look from a
+reference YouTube Short (a black/red "cinematic" portfolio template); we rebuilt the style with the owner's own
+content and photos, copying no assets or copy. It replaces v2's "Monsoon Sahyadri" green + turmeric.
 
-**Type:** display = Bricolage Grotesque Variable (expressive, variable optical size), body = Geist
+**Type:** display = **Anton** (heavy condensed, uppercase; `h1`/`h2` get it by default, self-hosted
+subset `client/public/fonts/anton-subset.woff2`, 11 KB, preloaded; declared for weights 100–900 so bold never
+fakes it; `.slant` gives the synthetic oblique), heading = Bricolage Grotesque Variable (`font-heading`, `h3`/`h4`
+and card titles), body = Geist
 Variable, mono = Geist Mono Variable (eyebrows, labels, code), all via `@fontsource-variable`.
-Handwriting = Caveat Bold (`font-hand`) and the Marathi place name = Kalam (`font-marathi`), both
+Handwriting = Caveat Bold (`font-hand`, currently unused) and the Marathi place name = Kalam (`font-marathi`), both
 self-hosted **subsets** in `client/public/fonts/` (made with pyftsubset; 17 KB + 3 KB) so they never
 compete with the LCP image. Adding new handwritten glyphs or Devanagari words means re-subsetting. Fluid scale with `clamp()` tuned for 375→1440px:
-`text-body`, `text-lead`, `text-h3`, `text-h2`, `text-h1`, `text-display`.
+`text-body`, `text-lead`, `text-h3`, `text-h2`, `text-h1`, `text-display`, `text-mega` (giant hero name).
 
-**Other tokens:** `rounded-card` (1.25rem), `rounded-pill`, `ease-out-expo`, `ease-in-out-quint`,
+**Other tokens:** `rounded-card` (0.875rem), `rounded-pill`, `ease-out-expo`, `ease-in-out-quint`,
 `max-w-content` (76rem), `--spacing-section`. Component classes in index.css: `.grain` (fixed
-film-grain overlay), `.blob` (blurred gradient-mesh circle, colour via `--blob`), `.eyebrow`.
+film-grain overlay), `.blob` (blurred gradient-mesh circle, colour via `--blob`), `.eyebrow`, and v3's
+`.panel` (dark card with a red edge glow on hover), `.slant`, `.ember-text` (red gradient text fill),
+`.grid-floor` (hero perspective grid).
 
 ## Theme
 
@@ -123,10 +129,10 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - **Prerender + hydrate.** `npm run build -w client` = `vite build` → SSR build of `entry-server.tsx` → `scripts/prerender.mjs`, which writes `dist/index.html`, `chat/index.html`, `projects/<slug>/index.html` (non-coming-soon) and `404.html`, plus `sitemap.xml` and `robots.txt` from `VITE_SITE_URL`. The host must serve clean URLs (`/chat` → `chat/index.html`) and `404.html` for misses; `client/scripts/serve.mjs` does exactly that locally.
 - The prerender replaces Vite's entry `<script>` with a small boot script that imports the app **after the hero portrait's LCP entry** (2 s cap; decode + next frame on browsers without LCP entries). Content is readable as plain HTML before JS.
 - **Hydration must match the prerender.** Anything that depends on the visitor (theme, fine pointer, reduced motion, first visit, platform) is gated on `useHydrated()` (`hooks/useHydrated.ts`) so the first client render equals the server one. No `Date`/random output in render (footer year uses `suppressHydrationWarning`). New lazy routes are fine: `main.tsx` waits for `router.state.initialized` before hydrating.
-- **Pre-paint classes** from the inline script in `index.html`: `motion-ok` (hides `[data-hero]` copy and closes the portrait curtain until GSAP reveals them, with a 4 s CSS failsafe) and `intro-pending` (first visit: a bg-coloured cover until the preloader has played). The portrait is never hidden, only covered, so it stays the LCP element.
+- **Pre-paint classes** from the inline script in `index.html`: `motion-ok` (hides `[data-hero]` copy until GSAP reveals it, with a 4 s CSS failsafe) and `intro-pending` (first visit: a bg-coloured cover until the preloader has played). The portrait is never hidden (only moved), so it stays the LCP element.
 - **Head tags:** pages render `<Seo title description path [noindex] [jsonLd]>` (`components/Seo.tsx`, React 19 native `<title>/<meta>/<link>` hoisting; no Helmet). The prerender moves them into `<head>` with `data-prerender`; `main.tsx` removes those before React takes over, so each route owns its tags. JSON-LD `Person` on the home page comes from `lib/seo.ts` (resume facts only, no phone).
 - **Code splitting:** routes other than Home, the command palette (`CommandPaletteHost` owns ⌘K and loads cmdk on first open), the chat panel and the 3D scene are separate chunks. Scroll choreography is set up in idle steps (`lib/idle.ts`), immediately only when the URL has a `#hash`.
-- **Lighthouse (mobile, simulated):** home 91–96 performance, 100 accessibility / best practices / SEO; project and chat pages 99–100. Re-measure against `npm run preview -w client`, not `vite preview` (no clean URLs).
+- **Lighthouse (mobile, simulated):** home 96–97 performance (v3), 100 accessibility / best practices / SEO; project and chat pages 99–100. Re-measure against `npm run preview -w client`, not `vite preview` (no clean URLs).
 - **A11y rules checked by `e2e/smoke.spec.ts` (axe, WCAG 2.2 AA, both themes):** icon buttons are 44px (`size-11`), visible text is part of each accessible name, `scroll-padding` keeps focus clear of the header and chat launcher, the role rotator has a pause button and pauses on hover, contact errors use red-700/red-300 and focus moves to the first invalid field. RootLayout sets `html[data-ready]` once hydrated (tests wait on it).
 
 ## Deploy (Phase 7)
@@ -157,6 +163,21 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - **Anti-"AI look" rules** (audit every section when copy changes): no purple/violet gradients, no 👋 or
   emoji openers, no "passionate", "leverage", "cutting-edge", "seamless" or similar filler, no invented
   numbers or stats (only resume facts), real photos only.
+
+## v3 "Ember" look (from the owner's reference video)
+
+- **Hero:** giant `SHRIDHAR` (`[data-mega]`, decorative, letters rise on load) behind the cut-out portrait
+  (`assets-raw/profile-cutout.png`, background removed with rembg `u2net_human_seg`; `npm run images` makes
+  `cutout-*.avif|webp|png`, preloaded in `index.html`, the LCP element). Left: name `h1`, role box, lead,
+  buttons. Right: "Right now" panel (`profile.now`) and three highlight tiles (`profile.highlights`, real
+  resume facts only). Red glow + `.grid-floor` + a faint Sahyadri ridge on the horizon. On phones the
+  portrait comes first.
+- **Header** is a floating pill with a red `SC` monogram and a red Contact pill.
+- **Section titles** are uppercase Anton, `.slant`, with the closing word in `text-accent-fg` and a period.
+- **TechMarquee** is a slanted text strip split by red diamonds; **Projects** are full-width rows
+  (`ProjectCard`) with a red wash on hover; **Manifesto** is a full-bleed red band quoting `profile.motto`;
+  **Contact** ("Let's build it together.") has the particle sphere (`LazyHeroScene`, desktop only).
+- The hand-drawn layer (HandMark/HandNote) is no longer used on the home page; the components remain.
 
 ## Conventions
 

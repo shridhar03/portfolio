@@ -39,7 +39,11 @@ export function Preloader({ onDone }: { onDone: () => void }) {
       onAnimationComplete={() => leaving && onDone()}
       style={{ willChange: 'transform' }}
     >
-      <div className="flex overflow-hidden font-display text-[clamp(2.5rem,10vw,7rem)] font-bold tracking-tight">
+      <div
+        className="absolute size-[min(36rem,90vw)] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_40%,transparent),transparent)]"
+        aria-hidden
+      />
+      <div className="slant relative flex overflow-hidden font-display text-[clamp(3rem,12vw,8rem)] uppercase">
         {NAME.split('').map((ch, i) => (
           <motion.span
             key={i}
@@ -60,7 +64,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
           .
         </motion.span>
       </div>
-      <div className="mt-6 flex w-[min(18rem,70vw)] items-center gap-4 font-mono text-sm text-muted">
+      <div className="relative mt-6 flex w-[min(18rem,70vw)] items-center gap-4 font-mono text-sm text-muted">
         <div className="h-px flex-1 overflow-hidden bg-border">
           <div
             className="h-full origin-left bg-accent"

@@ -29,11 +29,22 @@ export function SiteHeader() {
   }, [open])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-transparent bg-bg/70 backdrop-blur-md supports-[backdrop-filter]:bg-bg/55">
-      <div className="mx-auto flex max-w-content items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link to="/" className="font-display text-lg font-bold tracking-tight text-fg">
-          SC<span className="text-accent-fg">.</span>
-          <span className="sr-only"> Shridhar Chavan, home</span>
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-4">
+      <div className="mx-auto flex max-w-content items-center justify-between gap-4 rounded-pill border border-border bg-bg/70 py-1.5 pr-1.5 pl-1.5 backdrop-blur-md supports-[backdrop-filter]:bg-bg/55 sm:pl-2">
+        <Link to="/" className="flex items-center gap-2.5 pr-2 text-fg">
+          <span
+            className="grid size-11 place-items-center rounded-full bg-accent font-display text-lg text-accent-ink shadow-[0_0_24px_-4px_var(--color-accent)]"
+            aria-hidden
+          >
+            SC
+          </span>
+          <span
+            className="hidden font-display text-lg tracking-wide uppercase sm:inline"
+            aria-hidden
+          >
+            Shridhar
+          </span>
+          <span className="sr-only">Shridhar Chavan, home</span>
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -42,7 +53,11 @@ export function SiteHeader() {
               <li key={l.id}>
                 <a
                   href={`/#${l.id}`}
-                  className="rounded-pill px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
+                  className={
+                    l.id === 'contact'
+                      ? 'rounded-pill bg-accent px-4 py-2 text-sm font-medium text-accent-ink transition-[filter] hover:brightness-110'
+                      : 'rounded-pill px-3 py-2 text-sm text-muted transition-colors hover:bg-surface-2 hover:text-fg'
+                  }
                 >
                   {l.label}
                 </a>
@@ -78,14 +93,18 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <nav id="mobile-nav" aria-label="Mobile" className="border-t border-border bg-bg md:hidden">
+        <nav
+          id="mobile-nav"
+          aria-label="Mobile"
+          className="mx-auto mt-2 max-w-content rounded-card border border-border bg-bg md:hidden"
+        >
           <ul className="mx-auto max-w-content px-4 py-4">
             {navLinks.map((l) => (
               <li key={l.id}>
                 <a
                   href={`/#${l.id}`}
                   onClick={() => setOpen(false)}
-                  className="block py-3 font-display text-2xl font-semibold"
+                  className="block py-3 font-display text-3xl uppercase"
                 >
                   {l.label}
                 </a>

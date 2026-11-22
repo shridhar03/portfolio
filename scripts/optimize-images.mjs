@@ -16,6 +16,9 @@ const jobs = [
     widths: [360, 540, 720],
   },
   { src: 'speaking.jpg', name: 'speaking', widths: [480, 800, 1179] },
+  // v3 hero: the same portrait with the background removed (rembg, u2net_human_seg), so it can
+  // stand in front of the giant name. Transparent, so the fallback is PNG, not JPEG.
+  { src: 'profile-cutout.png', name: 'cutout', widths: [320, 480, 645], alpha: true },
 ]
 
 await mkdir(outDir, { recursive: true })
@@ -33,10 +36,15 @@ for (const job of jobs) {
         .clone()
         .webp({ quality: 78 })
         .toFile(path.join(outDir, `${job.name}-${w}.webp`)),
-      img
-        .clone()
-        .jpeg({ quality: 80, mozjpeg: true })
-        .toFile(path.join(outDir, `${job.name}-${w}.jpg`)),
+      job.alpha
+        ? img
+            .clone()
+            .png({ palette: true, quality: 85, effort: 10 })
+            .toFile(path.join(outDir, `${job.name}-${w}.png`))
+        : img
+            .clone()
+            .jpeg({ quality: 80, mozjpeg: true })
+            .toFile(path.join(outDir, `${job.name}-${w}.jpg`)),
     ])
   }
   console.log('✓', job.name)

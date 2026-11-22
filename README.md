@@ -10,10 +10,11 @@ and Claude for the chat.
 
 ## Highlights
 
-- **Monsoon Sahyadri look:** forest green and turmeric from the hero photo, a repeating Sahyadri ridge
-  motif, a few hand-drawn marks and the Marathi name of Satara. 3D text: the name flips in letter by
-  letter, roles turn on a box, headings tilt upright on scroll, buttons roll on hover, GPAs roll like
-  an odometer.
+- **Ember look (v3):** near-black and signal red, a giant name behind a cut-out portrait, a perspective
+  grid floor, slanted condensed headlines, a red quote band and a particle sphere by the contact form,
+  with a faint Sahyadri ridge and the Marathi name of Satara kept as the personal touch. 3D text: the name
+  flips in letter by letter, roles turn on a box, headings tilt upright on scroll, buttons roll on hover,
+  numbers roll like an odometer.
 - **Motion with restraint:** a one-time preloader, a SplitText hero reveal, scroll-driven sections
   (pinned experience story, horizontal certifications strip, drawn timeline) with GSAP +
   ScrollTrigger and Lenis smooth scroll, a lazy-loaded React Three Fiber particle field, shared-layout

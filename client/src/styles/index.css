@@ -1,6 +1,17 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+/* Display face: Anton (SIL OFL), a heavy condensed grotesque for the big uppercase headlines.
+   Subset to Latin basics (11 KB). One weight, declared across 100–900 so `font-bold` never fakes it. */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/anton-subset.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00B7, U+2013-2014, U+2019, U+201C-201D, U+2022, U+2192;
+}
+
 /* Handwriting (Caveat Bold) and the Marathi place name (Kalam), both SIL OFL. Subset with
    pyftsubset to the glyphs the site uses (17 KB + 3 KB) so they never compete with the hero image. */
 @font-face {
@@ -45,12 +56,18 @@
     min-height: 100dvh;
   }
   h1,
-  h2,
+  h2 {
+    @apply font-display text-fg uppercase;
+    font-weight: 400;
+    letter-spacing: 0.005em;
+    line-height: 0.95;
+    text-wrap: balance;
+  }
   h3,
   h4 {
-    @apply font-display text-fg;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    @apply font-heading text-fg;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
     text-wrap: balance;
   }
   ::selection {
@@ -92,6 +109,54 @@
 
   .eyebrow {
     @apply font-mono text-xs tracking-[0.2em] text-accent-fg uppercase;
+  }
+
+  /* Ember (v3) ---------------------------------------------------------- */
+
+  /* Oblique display type for the loud lines ("Shipped." style). Anton has no italic, so the
+     browser slants it; that is the look we want. */
+  .slant {
+    font-style: italic;
+    font-synthesis: style;
+  }
+
+  /* Red-to-ember fill for giant display words. */
+  .ember-text {
+    background: linear-gradient(180deg, #ff4b3a 0%, var(--color-accent) 45%, #5a0b06 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Perspective floor under the hero: a red grid receding to a horizon. Decorative. */
+  .grid-floor {
+    pointer-events: none;
+    position: absolute;
+    inset-inline: -25%;
+    bottom: 0;
+    height: 46%;
+    transform: perspective(420px) rotateX(62deg);
+    transform-origin: 50% 100%;
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center bottom;
+    mask-image: linear-gradient(to top, black 10%, transparent 85%);
+  }
+
+  /* Dark glass card with a hairline and a faint red edge glow on hover. */
+  .panel {
+    @apply rounded-card border border-border bg-surface/80 backdrop-blur-sm;
+    transition:
+      border-color 0.3s var(--ease-out-expo),
+      box-shadow 0.3s var(--ease-out-expo);
+  }
+  .panel:is(:hover, :focus-within) {
+    border-color: color-mix(in oklab, var(--color-accent) 55%, var(--color-border));
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 25%, transparent),
+      0 18px 50px -20px color-mix(in oklab, var(--color-accent) 45%, transparent);
   }
 }
 
@@ -159,20 +224,14 @@ html.has-custom-cursor :is(input, textarea, [contenteditable]) {
 
 /* ---------- Prerender ↔ JS handoff (Phase 6) ----------
    index.html's inline script adds `motion-ok` and, on a first visit, `intro-pending` before
-   first paint. The prerendered hero copy and portrait curtain then start in their "before"
-   state so the JS reveal never flashes; the portrait itself is painted (it is the LCP image). */
+   first paint. The prerendered hero copy then starts hidden so the JS reveal never flashes;
+   the portrait itself is always painted (it is the LCP image). */
 html.intro-pending body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 99;
   background: var(--color-bg);
-}
-[data-hero-curtain] {
-  transform: scaleY(0);
-}
-html.motion-ok [data-hero-curtain] {
-  transform: scaleY(1);
 }
 html.motion-ok [data-hero] {
   visibility: hidden;

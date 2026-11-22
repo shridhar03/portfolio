@@ -75,7 +75,11 @@ export function Skills() {
     <Section
       id="skills"
       eyebrow="02 · Skills"
-      title="What I build with"
+      title={
+        <>
+          What I <span className="text-accent-fg">build with.</span>
+        </>
+      }
       intro="JavaScript across the whole stack, with AI/ML and NLP on top."
     >
       <ul

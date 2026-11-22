@@ -1,5 +1,5 @@
 // `npm run resume`: renders client/public/Shridhar_Chavan_Resume.pdf (the hero "Resume" button) from
-// shared/profile.json + shared/projects.json, in the site's Monsoon Sahyadri style (light, print-safe).
+// shared/profile.json + shared/projects.json, in the site's Ember style (light, print-safe).
 // Facts come only from those files. No phone number, by design.
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -30,30 +30,30 @@ const html = `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face { font-family: M; src: url(${mono}); font-weight: 100 900; }
 @page { size: A4; margin: 0; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: B; color: #0f1d17; background: #fffdf6; font-size: 9.6pt; line-height: 1.45; }
-header { background: #0a1410; color: #e8efe9; padding: 26px 40px 0; position: relative; }
+body { font-family: B; color: #141212; background: #ffffff; font-size: 9.6pt; line-height: 1.45; }
+header { background: #09090a; color: #f5f2ef; padding: 26px 40px 0; position: relative; }
 header h1 { font-family: D; font-weight: 800; font-size: 30pt; letter-spacing: -.02em; line-height: 1; }
-header .tag { color: #9db3a6; margin-top: 6px; font-size: 10.5pt; }
-header .contact { font-family: M; font-size: 8pt; letter-spacing: .04em; color: #f0b85a; margin-top: 10px; display: flex; gap: 18px; }
+header .tag { color: #a9a4a0; margin-top: 6px; font-size: 10.5pt; }
+header .contact { font-family: M; font-size: 8pt; letter-spacing: .04em; color: #ff6a5c; margin-top: 10px; display: flex; gap: 18px; }
 header svg { display: block; width: 100%; height: 44px; margin-top: 14px; }
 main { padding: 18px 40px 28px; display: grid; grid-template-columns: 1fr 200px; gap: 26px; }
-h2 { font-family: M; font-size: 8pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #8a4b00; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #d6cfbb; }
+h2 { font-family: M; font-size: 8pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #b3170f; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #d9d1c6; }
 section:first-child h2 { margin-top: 0; }
 h3 { font-family: D; font-weight: 700; font-size: 11pt; }
-.meta { color: #475a50; font-size: 8.8pt; }
+.meta { color: #57514c; font-size: 8.8pt; }
 .item { margin-bottom: 8px; }
 ul.pts { margin: 3px 0 0 14px; }
-.chips { color: #475a50; font-family: M; font-size: 7.6pt; margin-top: 2px; }
+.chips { color: #57514c; font-family: M; font-size: 7.6pt; margin-top: 2px; }
 aside p, aside li { font-size: 8.8pt; }
 aside ul { list-style: none; }
 aside li { margin-bottom: 3px; }
-.score { font-family: D; font-weight: 700; color: #8a4b00; }
+.score { font-family: D; font-weight: 700; color: #b3170f; }
 </style></head><body>
 <header>
   <h1>${esc(profile.name)}</h1>
   <p class="tag">${esc(profile.tagline)}</p>
   <p class="contact"><span>${esc(profile.location)}</span><span>${esc(profile.email)}</span><span>${esc(linkedin)}</span></p>
-  <svg viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0 118 76 112 138 72 262 66 302 92 362 88 424 52 562 46 604 80 682 84 742 60 862 57 904 94 982 97 1044 64 1182 60 1222 88 1302 91 1362 70 1440 72V200H0Z" fill="#dfe3d3"/><path d="M0 152 118 147 168 118 302 113 342 141 472 145 522 112 642 107 692 141 822 147 872 121 1012 116 1062 147 1182 151 1232 125 1342 120 1392 145 1440 147V200H0Z" fill="#fffdf6"/><path d="M424 52 562 46" stroke="#e8a33a" stroke-width="6" stroke-linecap="round"/></svg>
+  <svg viewBox="0 0 1440 200" preserveAspectRatio="none"><path d="M0 118 76 112 138 72 262 66 302 92 362 88 424 52 562 46 604 80 682 84 742 60 862 57 904 94 982 97 1044 64 1182 60 1222 88 1302 91 1362 70 1440 72V200H0Z" fill="#e6ddd3"/><path d="M0 152 118 147 168 118 302 113 342 141 472 145 522 112 642 107 692 141 822 147 872 121 1012 116 1062 147 1182 151 1232 125 1342 120 1392 145 1440 147V200H0Z" fill="#ffffff"/><path d="M424 52 562 46" stroke="#d92b20" stroke-width="6" stroke-linecap="round"/></svg>
 </header>
 <main>
   <div>
