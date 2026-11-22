@@ -24,6 +24,7 @@ import {
 } from '@/lib/motion'
 import { useChat } from '@/providers/chat-context'
 import { useIntro } from '@/providers/intro-context'
+import { asset } from '@/lib/base'
 
 const MEGA = 'SHRIDHAR'
 
@@ -166,7 +167,7 @@ export function Hero() {
             </Magnetic>
             <Magnetic>
               <Button asChild size="lg" variant="outline">
-                <a href={profile.resumePdf} download>
+                <a href={asset(profile.resumePdf)} download>
                   <FileDown aria-hidden /> Resume
                 </a>
               </Button>

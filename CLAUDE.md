@@ -235,3 +235,15 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - **Licensing:** logo paths come from simple-icons (CC0); the trademarks belong to their owners and are
   shown only to name tools used. The backgrounds are original generated art; `code.svg` is this repo's own
   `server/src/lib/intent.ts` + `llm.ts`. No stock images.
+
+## GitHub Pages deploy (v3.3)
+
+- Live at `https://shridhar03.github.io/portfolio/` via `.github/workflows/pages.yml` (every push to main).
+- **Base path:** `VITE_BASE` sets Vite's `base` (`/portfolio/` on Pages, `/` elsewhere). Router paths are
+  relative to it (`ROUTER_BASENAME` in `lib/base.ts`, also used by the prerender's static handler).
+  Anything in `public/` referenced from TS/TSX must go through `asset('/img/…')`; raw `<a href>` to the
+  home page use `BASE`. CSS `url()` and index.html links are rewritten by Vite. The manifest uses relative URLs.
+  `npm run preview -w client` honours `BASE=/portfolio` for testing a Pages build locally.
+- **Static mode:** `VITE_API_URL=none` (the Pages default until repo variable `API_URL` is set) makes
+  `lib/api.ts` skip all requests (`API_ENABLED`): bundled projects, chat replies that it is offline
+  with the email, contact form falls back to the mailto link. No console errors.

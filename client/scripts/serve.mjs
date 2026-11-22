@@ -10,6 +10,12 @@ import { gzipSync } from 'node:zlib'
 const dist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist')
 const port = Number(process.env.PORT ?? 4173)
 const api = new URL(process.env.API_PROXY ?? 'http://localhost:4000')
+// Match a build made with VITE_BASE (e.g. /portfolio/ for GitHub Pages): serve dist/ under it.
+const base =
+  `/${(process.env.BASE ?? process.env.VITE_BASE ?? '/').replace(/^\/+|\/+$/g, '')}`.replace(
+    /\/+$/,
+    '',
+  )
 const types = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -68,7 +74,10 @@ createServer(async (req, res) => {
     upstream.on('error', () => res.writeHead(502).end('API unavailable'))
     return req.pipe(upstream)
   }
-  const target = path.join(dist, decodeURIComponent(url.pathname))
+  if (base && url.pathname === base) return res.writeHead(301, { location: `${base}/` }).end()
+  if (base && !url.pathname.startsWith(`${base}/`))
+    return send(req, res, path.join(dist, '404.html'), 404)
+  const target = path.join(dist, decodeURIComponent(url.pathname.slice(base.length)))
   if (target.startsWith(dist)) {
     for (const file of [target, path.join(target, 'index.html'), `${target}.html`]) {
       if (await isFile(file)) return send(req, res, file)

@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { profile } from '@/content/profile'
+import { API_BASE, API_ENABLED } from '@/lib/api'
 import { createSseParser } from '@/lib/sse'
 import { ChatContext, type ChatMessage } from './chat-context'
 
-const BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+// The static site can be live without the API (e.g. GitHub Pages before the server is deployed).
+const UNAVAILABLE = `The assistant isn't reachable right now. You can email me at ${profile.email}, or try again later.`
+
 const MAX_HISTORY = 12 // matches the server limit
 const uid = () => Math.random().toString(36).slice(2, 10)
 
@@ -43,7 +47,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       patchLast((m) => ({ ...m, content: m.content || msg, error: !m.content }))
 
     try {
-      const res = await fetch(`${BASE}/api/chat`, {
+      if (!API_ENABLED) return fail(UNAVAILABLE)
+      const res = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: history }),
@@ -51,8 +56,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       })
       if (res.status === 429)
         return fail("You've asked a lot of questions! Please wait a few minutes.")
-      if (!res.ok || !res.body)
-        return fail('The assistant is unavailable right now. Please try again.')
+      if (!res.ok || !res.body) return fail(UNAVAILABLE)
 
       const decoder = new TextDecoder()
       const feed = createSseParser((e) => {
@@ -69,8 +73,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         feed(decoder.decode(value, { stream: true }))
       }
     } catch (err) {
-      if ((err as Error).name !== 'AbortError')
-        fail("Couldn't reach the assistant. Check your connection.")
+      if ((err as Error).name !== 'AbortError') fail(UNAVAILABLE)
     } finally {
       abortRef.current = null
       setStreaming(false)

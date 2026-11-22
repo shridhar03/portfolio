@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { asset } from '@/lib/base'
 
 const art = {
   circuit: '/bg/circuit.svg',
@@ -21,7 +22,7 @@ export function TechBackdrop({ kind, className }: { kind: keyof typeof art; clas
         'pointer-events-none absolute inset-x-0 -inset-y-[12%] -z-10 bg-cover bg-center bg-no-repeat opacity-[0.16] dark:opacity-[0.22]',
         className,
       )}
-      style={{ backgroundImage: `url(${art[kind]})` }}
+      style={{ backgroundImage: `url(${asset(art[kind])})` }}
     />
   )
 }

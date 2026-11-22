@@ -10,6 +10,7 @@ import { useHydrated } from '@/hooks/useHydrated'
 import { DUR, EASE, SPRING, STAGGER } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 import { usePalette } from '@/providers/palette-context'
+import { BASE } from '@/lib/base'
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
@@ -74,7 +75,7 @@ export function SiteHeader() {
               <li key={l.id}>
                 {l.id === 'contact' ? (
                   <a
-                    href={`/#${l.id}`}
+                    href={`${BASE}#${l.id}`}
                     aria-current={active === l.id ? 'true' : undefined}
                     className="ml-1 inline-block rounded-pill bg-accent px-4 py-2 text-sm font-medium text-accent-ink transition-[filter,transform] duration-200 hover:-translate-y-px hover:brightness-110 active:translate-y-0"
                   >
@@ -82,7 +83,7 @@ export function SiteHeader() {
                   </a>
                 ) : (
                   <a
-                    href={`/#${l.id}`}
+                    href={`${BASE}#${l.id}`}
                     aria-current={active === l.id ? 'true' : undefined}
                     className={cn(
                       'group/nav relative inline-block rounded-pill px-3 py-2 text-sm transition-colors duration-200',
@@ -180,7 +181,7 @@ export function SiteHeader() {
                   transition={{ delay: 0.05 + i * STAGGER.tight, duration: DUR.ui, ease: EASE.out }}
                 >
                   <a
-                    href={`/#${l.id}`}
+                    href={`${BASE}#${l.id}`}
                     onClick={() => setOpen(false)}
                     aria-current={active === l.id ? 'true' : undefined}
                     className="flex items-center justify-between py-3 font-display text-3xl uppercase aria-[current]:text-accent-fg"

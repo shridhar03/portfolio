@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
 import { useChat } from '@/providers/chat-context'
+import { asset } from '@/lib/base'
 
 const ChatPanel = lazy(() => import('./ChatPanel').then((m) => ({ default: m.ChatPanel })))
 
@@ -40,7 +41,7 @@ export function ChatWidget() {
             >
               <div className="flex items-center gap-3">
                 <img
-                  src="/img/profile-360.webp"
+                  src={asset('/img/profile-360.webp')}
                   alt=""
                   width={36}
                   height={36}

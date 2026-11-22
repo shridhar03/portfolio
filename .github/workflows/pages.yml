@@ -1,0 +1,51 @@
+name: Deploy site to GitHub Pages
+
+# Builds the prerendered client for https://<owner>.github.io/<repo>/ and publishes it with GitHub
+# Pages. The API (chat + contact) is not part of Pages: until it is deployed (render.yaml), the site
+# builds in static mode (VITE_API_URL=none). Once it is live, set the repository variable API_URL
+# (Settings → Secrets and variables → Actions → Variables) to its https URL and re-run this workflow.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Build the client under the Pages path
+        run: npm run build -w client
+        env:
+          VITE_BASE: ${{ steps.pages.outputs.base_path }}/
+          VITE_SITE_URL: ${{ steps.pages.outputs.base_url }}
+          VITE_API_URL: ${{ vars.API_URL || 'none' }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: client/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

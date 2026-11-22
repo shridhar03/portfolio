@@ -14,13 +14,14 @@ import {
 } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { navLinks, profile } from '@/content/profile'
 import { useProjects } from '@/hooks/useProjects'
 import { useChat } from '@/providers/chat-context'
 import { useLenis } from '@/providers/lenis-context'
 import { usePalette } from '@/providers/palette-context'
 import { useTheme } from '@/providers/theme-context'
+import { asset } from '@/lib/base'
 
 function Item({
   icon: Icon,
@@ -56,6 +57,7 @@ export function CommandPalette() {
   const { open, setOpen } = usePalette()
   const [copied, setCopied] = useState(false)
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const lenis = useLenis()
   const { theme, toggle } = useTheme()
   const chat = useChat()
@@ -75,7 +77,7 @@ export function CommandPalette() {
   }
 
   const goToSection = (id: string) => {
-    if (window.location.pathname !== '/') return navigate(`/#${id}`)
+    if (pathname !== '/') return navigate(`/#${id}`)
     const el = document.getElementById(id)
     if (!el) return
     if (lenis) lenis.scrollTo(el, { offset: -72 })
@@ -172,7 +174,7 @@ export function CommandPalette() {
               <Item
                 icon={FileDown}
                 value="download resume cv pdf"
-                onSelect={run(() => window.open(profile.resumePdf, '_blank'))}
+                onSelect={run(() => window.open(asset(profile.resumePdf), '_blank'))}
               >
                 Download resume
               </Item>

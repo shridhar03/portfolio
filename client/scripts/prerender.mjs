@@ -18,7 +18,9 @@ if (!siteUrl) {
   )
 }
 const origin = siteUrl || 'http://localhost:4173'
-const apiOrigin = env.VITE_API_URL ? new URL(env.VITE_API_URL).origin : ''
+const apiOrigin = /^https?:\/\//.test(env.VITE_API_URL ?? '')
+  ? new URL(env.VITE_API_URL).origin
+  : ''
 
 /**
  * Content-Security-Policy as a <meta> tag, so it ships with the static files on any host. Inline

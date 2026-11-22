@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  // '/portfolio/' for GitHub Pages (a project site); '/' everywhere else.
+  base: process.env.VITE_BASE || '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': path.resolve(import.meta.dirname, './src') },

@@ -107,16 +107,29 @@ never committed or sent to the browser. See `server/.env.example` and `client/.e
 
 **Client** (Vercel → Environment Variables; read at build time, public by design)
 
-| Variable        | Purpose                                                                      |
-| --------------- | ---------------------------------------------------------------------------- |
-| `VITE_SITE_URL` | Public site URL, e.g. `https://your-domain.com`: canonical, OG tags, sitemap |
-| `VITE_API_URL`  | API base URL, e.g. `https://shridhar-portfolio-api.onrender.com`             |
+| Variable        | Purpose                                                                                            |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| `VITE_SITE_URL` | Public site URL, e.g. `https://your-domain.com`: canonical, OG tags, sitemap                       |
+| `VITE_API_URL`  | API base URL, e.g. `https://shridhar-portfolio-api.onrender.com`; `none` builds a static-only site |
+| `VITE_BASE`     | Path the site is served under: `/` (default) or `/portfolio/` for GitHub Pages                     |
 
 ## Deploy
 
 The site is static (Vercel) and the API is a Node service (Render). Both have free tiers. MongoDB
 Atlas M0 and Resend are free as well. The Claude API is billed per use, so the chatbot stays in
 offline mode until you add a key.
+
+### Live now: GitHub Pages (site only)
+
+The site is published from this repository by [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
+on every push to `main`, at **https://shridhar03.github.io/portfolio/**. It builds under the
+`/portfolio/` path (`VITE_BASE`) and, until the API is deployed, in static mode (`VITE_API_URL=none`):
+projects render from the bundled data, the chat says it is offline and points to email, and the
+contact form offers an email link instead of sending.
+
+To switch on chat and the contact form there, deploy the API (steps 1–2 below) with
+`CLIENT_ORIGIN=https://shridhar03.github.io`, then add a repository **variable** `API_URL` (Settings →
+Secrets and variables → Actions → Variables) with the Render URL, and re-run the Pages workflow.
 
 ### 1. MongoDB Atlas (database)
 

@@ -1,5 +1,9 @@
 // Base URL for the API. Empty in dev (Vite proxies /api); set VITE_API_URL in production.
-const BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+// `none` builds a static-only site (GitHub Pages without the server): no requests are made, the
+// bundled projects are used, chat says it's offline and the contact form offers email instead.
+const RAW = import.meta.env.VITE_API_URL ?? ''
+export const API_ENABLED = RAW !== 'none'
+export const API_BASE = API_ENABLED ? RAW.replace(/\/$/, '') : ''
 
 export class ApiError extends Error {
   status: number
@@ -15,10 +19,11 @@ export async function api<T>(
   path: string,
   init?: RequestInit & { timeoutMs?: number },
 ): Promise<T> {
+  if (!API_ENABLED) throw new ApiError(503, 'The API is not part of this deployment')
   const ctrl = new AbortController()
   const timer = setTimeout(() => ctrl.abort(), init?.timeoutMs ?? 10_000)
   try {
-    const res = await fetch(`${BASE}${path}`, {
+    const res = await fetch(`${API_BASE}${path}`, {
       ...init,
       signal: init?.signal ?? ctrl.signal,
       headers: { 'Content-Type': 'application/json', ...init?.headers },
