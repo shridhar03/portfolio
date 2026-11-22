@@ -12,7 +12,7 @@ export function SiteFooter() {
         {/* Signature: the name rises out of the bottom edge as the footer comes into view. */}
         <div className="mx-auto max-w-content overflow-hidden px-4 pt-6 sm:px-6" aria-hidden>
           <motion.p
-            className="slant ember-text font-display text-[clamp(3.5rem,1rem+12vw,13rem)] leading-[0.82] whitespace-nowrap uppercase opacity-80 select-none"
+            className="slant ember-text font-display text-[clamp(2.5rem,9.4vw,10.5rem)] leading-[0.82] whitespace-nowrap uppercase opacity-80 select-none"
             initial={{ y: '45%' }}
             whileInView={{ y: '0%' }}
             viewport={{ once: true, amount: 0.3 }}

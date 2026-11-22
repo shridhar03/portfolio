@@ -15,6 +15,9 @@ and Claude for the chat.
   with a faint Sahyadri ridge and the Marathi name of Satara kept as the personal touch. 3D text: the name
   flips in letter by letter, roles turn on a box, headings tilt upright on scroll, buttons roll on hover,
   numbers roll like an odometer.
+- **Tech stack in 3D:** the tools I use as extruded, glossy CSS 3D tiles that tilt toward the pointer
+  (logos from simple-icons, CC0; trademarks belong to their owners), over original technology backgrounds:
+  circuit traces, a service-map graph and this repo's own code (`npm run backgrounds`).
 - **Motion with restraint:** a one-time preloader, a SplitText hero reveal, scroll-driven sections
   (pinned experience story, horizontal certifications strip, drawn timeline) with GSAP +
   ScrollTrigger and Lenis smooth scroll, a lazy-loaded React Three Fiber particle field, shared-layout

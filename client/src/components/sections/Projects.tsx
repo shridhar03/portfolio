@@ -1,3 +1,4 @@
+import { TechBackdrop } from '@/components/motif/TechBackdrop'
 import { Spotlight } from '@/components/motion/Spotlight'
 import { ProjectCard } from '@/components/ProjectCard'
 import { useProjects } from '@/hooks/useProjects'
@@ -11,6 +12,10 @@ export function Projects() {
       className="relative isolate scroll-mt-20 overflow-hidden py-section"
     >
       <Spotlight className="-z-10" size={720} />
+      <TechBackdrop
+        kind="code"
+        className="right-0 left-auto w-full [mask-image:linear-gradient(to_right,transparent,black_45%)] bg-contain bg-top-right opacity-20 lg:w-[60%] dark:opacity-[0.22]"
+      />
       <div className="mx-auto max-w-content px-4 sm:px-6">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">

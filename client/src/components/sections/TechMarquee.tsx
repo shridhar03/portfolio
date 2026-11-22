@@ -1,36 +1,4 @@
-import {
-  siBootstrap,
-  siClaude,
-  siExpress,
-  siGit,
-  siGooglecloud,
-  siJavascript,
-  siMongodb,
-  siMysql,
-  siNodedotjs,
-  siReact,
-  siTailwindcss,
-  siTypescript,
-  siVercel,
-  type SimpleIcon,
-} from 'simple-icons'
-
-// Tech the resume lists (names come from simple-icons so the spelling is canonical).
-const tech: SimpleIcon[] = [
-  siMongodb,
-  siExpress,
-  siReact,
-  siNodedotjs,
-  siTypescript,
-  siJavascript,
-  siTailwindcss,
-  siBootstrap,
-  siMysql,
-  siGooglecloud,
-  siGit,
-  siVercel,
-  siClaude,
-]
+import { techStack as tech } from '@/content/tech'
 
 function Row({ dup }: { dup?: boolean }) {
   return (

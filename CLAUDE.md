@@ -217,3 +217,21 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
 - All visible resume content comes from `client/src/content/*` and `shared/projects.json`; edit there, not in components. Unknown details are `TODO` strings and render as placeholders.
 - Photos go through `<Picture>` (AVIF → WebP → JPEG, explicit width/height to avoid layout shift). The hero image is preloaded in `index.html`.
 - Add a Vitest test next to any new pure helper (`*.test.ts`) and a supertest test for each API route.
+
+## Tech icons + technology backgrounds (v3.2)
+
+- **3D tech icons:** the list lives in `content/tech.ts` (`techStack`, simple-icons objects; also feeds
+  `TechMarquee`). `components/sections/TechShelf.tsx` renders them at the top of Skills as a labelled list
+  (`aria-label="Technologies I use"`, visible names, `data-reveal-stagger`); each tile is
+  `components/motion/TechIcon3D.tsx`: a CSS 3D extruded tile (`.tile3d*` in index.css: 8 stacked layers +
+  glossy face + logo lifted on `translateZ`), tilting toward the pointer with Motion springs and floating
+  (`animate-float`, off under reduced motion). Decorative tile is `aria-hidden`; the name below is the text.
+- **Brand colour contrast:** `lib/brandColor.ts` (`brandOn(hex, bg, 3)`) lightens a brand colour until it
+  reaches 3:1 against the tile, so dark logos (Express, Vercel, MySQL) stay visible. Tested.
+- **Backgrounds:** `components/motif/TechBackdrop.tsx` (`kind: circuit | code | network`) draws
+  `public/bg/*.svg` behind a section, faint and masked, drifting via `[data-parallax]`. `Section` takes a
+  `backdrop` prop (adds `isolate` + a clipped layer). Used: Skills = circuit, Experience = network,
+  Projects = code (right side). Regenerate with `npm run backgrounds` (`scripts/tech-backgrounds.mjs`, seeded).
+- **Licensing:** logo paths come from simple-icons (CC0); the trademarks belong to their owners and are
+  shown only to name tools used. The backgrounds are original generated art; `code.svg` is this repo's own
+  `server/src/lib/intent.ts` + `llm.ts`. No stock images.

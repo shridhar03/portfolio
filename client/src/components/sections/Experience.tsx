@@ -1,3 +1,4 @@
+import { TechBackdrop } from '@/components/motif/TechBackdrop'
 import { Section } from '@/components/Section'
 import { experience } from '@/content/profile'
 
@@ -5,6 +6,12 @@ export function Experience() {
   return (
     <Section
       id="experience"
+      backdrop={
+        <TechBackdrop
+          kind="network"
+          className="[mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]"
+        />
+      }
       eyebrow="03 · Experience"
       title={
         <>

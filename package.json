@@ -21,6 +21,7 @@
     "images": "node scripts/optimize-images.mjs",
     "brand": "node scripts/brand-assets.mjs",
     "resume": "node scripts/resume-pdf.mjs",
+    "backgrounds": "node scripts/tech-backgrounds.mjs",
     "e2e": "playwright test --trace off"
   },
   "devDependencies": {

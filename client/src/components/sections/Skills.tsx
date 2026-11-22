@@ -2,6 +2,8 @@ import { BrainCircuit, Cloud, Code2, Globe, Layers, Workflow, type LucideIcon } 
 import { motion, useMotionValue } from 'motion/react'
 import { useState, type PointerEvent } from 'react'
 import { Section } from '@/components/Section'
+import { TechShelf } from '@/components/sections/TechShelf'
+import { TechBackdrop } from '@/components/motif/TechBackdrop'
 import { skillGroups } from '@/content/profile'
 import { cn } from '@/lib/utils'
 
@@ -74,6 +76,12 @@ export function Skills() {
   return (
     <Section
       id="skills"
+      backdrop={
+        <TechBackdrop
+          kind="circuit"
+          className="[mask-image:radial-gradient(70%_60%_at_50%_35%,black,transparent)]"
+        />
+      }
       eyebrow="02 · Skills"
       title={
         <>
@@ -82,8 +90,9 @@ export function Skills() {
       }
       intro="JavaScript across the whole stack, with AI/ML and NLP on top."
     >
+      <TechShelf />
       <ul
-        className="grid auto-rows-[minmax(11rem,auto)] gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        className="mt-14 grid auto-rows-[minmax(11rem,auto)] gap-4 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4"
         data-reveal-stagger
       >
         {skillGroups.map((g, i) => (

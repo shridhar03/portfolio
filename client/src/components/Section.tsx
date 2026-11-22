@@ -6,18 +6,30 @@ type Props = {
   eyebrow: string
   title: ReactNode
   intro?: ReactNode
+  /** Decorative layer behind the section (e.g. <TechBackdrop />). */
+  backdrop?: ReactNode
   children: ReactNode
   className?: string
 } & Omit<HTMLAttributes<HTMLElement>, 'title' | 'id'>
 
-export function Section({ id, eyebrow, title, intro, children, className, ...rest }: Props) {
+export function Section({
+  id,
+  eyebrow,
+  title,
+  intro,
+  backdrop,
+  children,
+  className,
+  ...rest
+}: Props) {
   return (
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className={cn('relative scroll-mt-20 py-section', className)}
+      className={cn('relative scroll-mt-20 py-section', backdrop && 'isolate', className)}
       {...rest}
     >
+      {backdrop && <div className="absolute inset-0 -z-10 overflow-hidden">{backdrop}</div>}
       <div className="mx-auto max-w-content px-4 sm:px-6">
         <p className="eyebrow" data-reveal>
           {eyebrow}
