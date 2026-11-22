@@ -190,7 +190,7 @@ Dark-first. `data-theme` on `<html>` is set before paint by an inline script in 
   tagged `data-depth` move at different rates on scroll-out (half on phones), breathing glow (`animate-breathe`,
   CSS), `<Spotlight>` (pointer light, mouse only), and a decorative scroll cue (`[data-scroll-cue]`,
   aria-hidden, tabIndex -1). The blur on hero copy is a one-off filter that is cleared afterwards.
-- **New scroll attributes** (useScrollAnimations): `[data-parallax="0.2"]` (decorative depth), `[data-iris]`
+- **New scroll attributes** (useScrollAnimations): `[data-parallax="0.2"]` (decorative depth; the Contact glow), `[data-iris]`
   (circle clip-path reveal, once; About figure), `[data-drift]` (big type sliding sideways; Manifesto).
   Image reveals are deliberately varied: hero rise, About iris, project cover tilt/zoom, case-study cover
   zoom-out + red curtain (ProjectPage, Motion).

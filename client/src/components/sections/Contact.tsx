@@ -90,7 +90,11 @@ export function Contact() {
       aria-labelledby="contact-title"
       className="relative isolate scroll-mt-20 overflow-hidden py-section"
     >
-      <div className="blob -bottom-40 left-1/3 -z-10 size-[32rem]" aria-hidden />
+      <div
+        className="blob -bottom-40 left-1/3 -z-10 size-[32rem]"
+        data-parallax="0.4"
+        aria-hidden
+      />
       <LazyHeroScene className="top-1/2 left-[8%] size-[34rem] -translate-y-1/2" />
       <div className="mx-auto grid max-w-content gap-12 px-4 sm:px-6 lg:grid-cols-12">
         <div className="lg:col-span-6" data-reveal>
